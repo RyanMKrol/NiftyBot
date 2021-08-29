@@ -1,0 +1,7 @@
+# install the deployment tool
+npm install noodle-deploy;
+
+# node is wrapped in which because sudo does not maintain the same path. As the user,
+# node exists, but as root, it doesn't:
+# https://askubuntu.com/questions/955434/sudo-node-command-not-found
+sudo "$(which node)" ./node_modules/noodle-deploy/build/index.js -s $AES_PASS -p NiftyBot -t "build/src/app.js";

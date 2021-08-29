@@ -1,0 +1,30 @@
+{
+  "name": "NiftyBot",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run lint && ./node_modules/.bin/babel src --out-dir build",
+    "lint": "eslint src/ --ext .js",
+    "start": "npm run-script build && node build/app.js"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.10.4",
+    "@babel/core": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
+    "eslint": "^7.4.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jsdoc": "^30.4.1",
+    "husky": "^4.2.5",
+    "jsdoc": "^3.6.5"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.10.4"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "./scripts/husky"
+    }
+  }
+}
