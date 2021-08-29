@@ -37,6 +37,15 @@ class Playlist {
   }
 
   /**
+   * Gets the playlist items
+   *
+   * @returns {Array<string>} Array of playlist items
+   */
+  get() {
+    return this.list;
+  }
+
+  /**
    * Syncs the local playlist with persistant storage
    */
   sync() {
