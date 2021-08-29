@@ -1,6 +1,6 @@
 import { shortCircuitPipeline } from 'noodle-utils';
 
-import { add, list } from '../commands';
+import { add, list, remove } from '../commands';
 
 /**
  * Method to handle when the bot is messaged by a user
@@ -8,7 +8,7 @@ import { add, list } from '../commands';
  * @param {module:app.Message} message The message that the user has sent
  */
 async function onMessage(message) {
-  shortCircuitPipeline(add, list)(message);
+  shortCircuitPipeline(add, list, remove)(message);
 }
 
 export default onMessage;
