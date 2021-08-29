@@ -1,8 +1,11 @@
 // credential constants
+import AWS_CREDENTIALS from '../../../credentials/aws.json';
 import DISCORD_CREDENTIALS from '../../../credentials/discord.json';
-import DYNAMO_CREDENTIALS from '../../../credentials/dynamo.json';
 
 // command constants
 const COMMAND_PREFIX = '!nb';
+const PLAYLISTS_BUCKET_NAME = 'nifty-bot-playlists';
 
-export { DISCORD_CREDENTIALS, DYNAMO_CREDENTIALS, COMMAND_PREFIX };
+export {
+  AWS_CREDENTIALS, DISCORD_CREDENTIALS, COMMAND_PREFIX, PLAYLISTS_BUCKET_NAME,
+};
