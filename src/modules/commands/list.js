@@ -28,7 +28,12 @@ async function list(messageHook) {
  */
 async function processListCommand(messageHook, guildId) {
   const playlist = await PLAYLIST_COLLECTION.getPlaylist(guildId);
-  messageHook.reply(`Here's the current playlist: ${playlist.get()}`);
+
+  const playlistData = playlist.get();
+
+  const output = playlistData.reduce((acc, val, index) => `${acc}${index + 1}. ${val}\n`, '');
+
+  messageHook.reply(`Here's the current playlist:\n${output}`);
 }
 
 /**
