@@ -1,6 +1,7 @@
 import ytdl from 'ytdl-core';
 
 import { COMMAND_PREFIX } from '../constants';
+import { PLAYLIST_COLLECTION } from '../model';
 
 const IS_ADD_COMMAND_REGEX = `${COMMAND_PREFIX} add (.*)`;
 
@@ -12,11 +13,12 @@ const IS_ADD_COMMAND_REGEX = `${COMMAND_PREFIX} add (.*)`;
  */
 async function add(messageHook) {
   const command = messageHook.content;
+  const guildId = messageHook.channel.guild.id;
   const link = isAdd(command);
 
   if (link === null) return false;
 
-  processAddCommand(messageHook, link);
+  processAddCommand(messageHook, guildId, link);
 
   return true;
 }
@@ -25,13 +27,15 @@ async function add(messageHook) {
  * Process the command by checking the link, and adding the item to the playlist
  *
  * @param {module:app.Message} messageHook The hook that contains the command being used
+ * @param {string} guildId The guild that we're adding a link for
  * @param {string} link The link to a youtube video
  */
-async function processAddCommand(messageHook, link) {
+async function processAddCommand(messageHook, guildId, link) {
   if (!(await validateYoutubeLink(messageHook, link))) return;
   if (!(await validateYoutubeVideoAvailable(messageHook, link))) return;
 
-  process.stdout.write('Processing the command');
+  const playlist = await PLAYLIST_COLLECTION.getPlaylist(guildId);
+  playlist.add(link);
 }
 
 /**

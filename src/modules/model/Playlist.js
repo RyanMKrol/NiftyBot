@@ -1,3 +1,6 @@
+import { PLAYLISTS_BUCKET_NAME } from '../constants';
+import { uploadFile } from '../data';
+
 /**
  * A model to track the playlist items
  */
@@ -6,9 +9,11 @@ class Playlist {
    * Constructor
    *
    * @param {Array<string>} list A list of links to pre-populate the playlist with
+   * @param {string} guildId The guild ID that this playlist exists for
    */
-  constructor(list) {
+  constructor(list, guildId) {
     this.list = list || [];
+    this.id = guildId;
   }
 
   /**
@@ -17,7 +22,7 @@ class Playlist {
    * @param {string} link the link to add to the playlist
    */
   add(link) {
-    this.list.append(link);
+    this.list.push(link);
     this.sync();
   }
 
@@ -35,8 +40,7 @@ class Playlist {
    * Syncs the local playlist with persistant storage
    */
   sync() {
-    process.stdout.write(`Current list is: ${this.list}`);
-    // push data to storage
+    uploadFile(PLAYLISTS_BUCKET_NAME, this.id, JSON.stringify(this.list));
   }
 }
 

@@ -1,5 +1,6 @@
 import { PLAYLISTS_BUCKET_NAME } from '../constants';
 import { downloadFile } from '../data';
+import Playlist from './Playlist';
 
 /**
  * A collection Playlists
@@ -16,22 +17,22 @@ export class PlaylistCollection {
    * Get a playlist from either local or persistant storage
    *
    * @param {string} guildId The guild ID to get the playlist for
+   * @returns {Playlist} The playlist for this guild
    */
   async getPlaylist(guildId) {
     if (this.playlists[guildId]) {
       return this.playlists[guildId];
     }
 
-    downloadFile(PLAYLISTS_BUCKET_NAME, guildId)
+    await downloadFile(PLAYLISTS_BUCKET_NAME, guildId)
       .then((data) => {
-        process.stdout.write(data);
+        this.playlists[guildId] = new Playlist(JSON.parse(data), guildId);
       })
-      .catch((error) => {
-        process.stdout.write(error);
+      .catch(() => {
+        this.playlists[guildId] = new Playlist([], guildId);
       });
 
-    return [];
-    // read data from s3, build a new playlist, and store in local memory
+    return this.playlists[guildId];
   }
 }
 
