@@ -8,6 +8,22 @@
     "lint": "eslint src/ --ext .js",
     "start": "npm run-script build && node build/app.js"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "./scripts/husky"
+    }
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.10.4",
+    "@ffmpeg-installer/ffmpeg": "^1.0.20",
+    "core-js": "^3.6.5",
+    "discord.js": "^12.5.1",
+    "ffmpeg": "0.0.4",
+    "ffmpeg-static": "^4.4.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "opusscript": "0.0.8",
+    "ytdl-core": "^4.9.1"
+  },
   "devDependencies": {
     "@babel/cli": "^7.10.4",
     "@babel/core": "^7.10.4",
@@ -18,13 +34,5 @@
     "eslint-plugin-jsdoc": "^30.4.1",
     "husky": "^4.2.5",
     "jsdoc": "^3.6.5"
-  },
-  "dependencies": {
-    "@babel/polyfill": "^7.10.4"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "./scripts/husky"
-    }
   }
 }
