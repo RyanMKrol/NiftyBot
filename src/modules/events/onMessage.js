@@ -1,4 +1,4 @@
-import { COMMAND_PREFIX } from '../constants';
+import add from '../commands';
 
 /**
  * Method to handle when the bot is messaged by a user
@@ -6,7 +6,7 @@ import { COMMAND_PREFIX } from '../constants';
  * @param {module:app.Message} message The message that the user has sent
  */
 async function onMessage(message) {
-  console.log(COMMAND_PREFIX, message);
+  add(message);
 }
 
 export default onMessage;
