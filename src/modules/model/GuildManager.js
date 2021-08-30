@@ -1,5 +1,6 @@
 import Player from './Player';
 import PLAYLIST_COLLECTION from './PlaylistCollection';
+import { CouldNotJoinChannel } from '../errors';
 
 /**
  * GuildManager
@@ -60,10 +61,15 @@ class GuildManager {
    */
   play(channel) {
     const playlistItems = this.playlist.get();
+    const channelToUse = this.currentChannel || channel;
+
+    if (!channelToUse) {
+      throw new CouldNotJoinChannel();
+    }
 
     if (playlistItems.length > 0 && !this.player.isPlaying()) {
-      this.player.play(channel, playlistItems[0]);
-      this.currentChannel = channel;
+      this.player.play(channelToUse, playlistItems[0]);
+      this.currentChannel = channelToUse;
     }
   }
 

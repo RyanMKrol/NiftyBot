@@ -2,6 +2,8 @@ import ffmpeg from 'fluent-ffmpeg';
 import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
 import ytdl from 'ytdl-core';
 
+import { UnplayableStream } from '../errors';
+
 ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
 /**
@@ -69,8 +71,7 @@ class Player {
         this.joinChannelAndStream(channel, playableStream);
       })
       .catch((error) => {
-        console.log('error playing video');
-        console.log(error);
+        throw new UnplayableStream(error);
       });
   }
 
