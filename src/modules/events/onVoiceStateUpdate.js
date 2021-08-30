@@ -14,6 +14,7 @@ async function onVoiceStateUpdate(oldState, newState) {
   if (!isBotInVoiceChannel(channels)) {
     const manager = await GUILD_MANAGER_COLLECTION.getManager(guildId);
     manager.updatePlayerDisconnected();
+    manager.clearPlaylist();
   }
 }
 
