@@ -6,10 +6,9 @@ import PLAYLIST_COLLECTION from './PlaylistCollection';
  */
 class GuildManager {
   /**
-   * @param {Player} player The player
    * @param {Playlist} playlist The playlist
    */
-  constructor(player, playlist) {
+  constructor(playlist) {
     this.player = new Player(() => this.next());
     this.playlist = playlist;
     this.currentChannel = undefined;
