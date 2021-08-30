@@ -1,5 +1,5 @@
 import { COMMAND_PREFIX } from '../constants';
-import { PLAYLIST_COLLECTION } from '../model';
+import createGuildManagerInstance from '../model';
 
 const IS_REMOVE_COMMAND_REGEX = `${COMMAND_PREFIX} remove (.*)`;
 
@@ -30,8 +30,8 @@ async function remove(messageHook) {
  * @param removeIndex
  */
 async function processRemoveCommand(messageHook, guildId, removeIndex) {
-  const playlist = await PLAYLIST_COLLECTION.getPlaylist(guildId);
-  playlist.remove(removeIndex);
+  const manager = await createGuildManagerInstance(guildId);
+  manager.removeFromPlaylist(removeIndex);
 }
 
 /**

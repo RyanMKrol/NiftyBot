@@ -36,6 +36,6 @@ export class PlaylistCollection {
   }
 }
 
-const playlists = new PlaylistCollection();
+const PLAYLIST_COLLECTION = new PlaylistCollection();
 
-export default playlists;
+export default PLAYLIST_COLLECTION;

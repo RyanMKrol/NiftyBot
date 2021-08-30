@@ -1,7 +1,7 @@
 import ytdl from 'ytdl-core';
 
 import { COMMAND_PREFIX } from '../constants';
-import { PLAYLIST_COLLECTION } from '../model';
+import createGuildManagerInstance from '../model';
 
 const IS_ADD_COMMAND_REGEX = `${COMMAND_PREFIX} add (.*)`;
 
@@ -35,8 +35,8 @@ async function processAddCommand(messageHook, guildId, link) {
   if (!(await validateYoutubeVideoAvailable(messageHook, link))) return;
   if (!(await validateUserState(messageHook))) return;
 
-  const playlist = await PLAYLIST_COLLECTION.getPlaylist(guildId);
-  playlist.add(link);
+  const manager = await createGuildManagerInstance(guildId);
+  manager.addToPlaylist(link);
 }
 
 /**
