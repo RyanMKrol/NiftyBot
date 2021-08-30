@@ -27,6 +27,7 @@ class Player {
    */
   constructor(onFinish) {
     this.connection = undefined;
+    this.dispatcher = undefined;
     this.playing = false;
     this.onFinish = onFinish;
   }
@@ -42,11 +43,27 @@ class Player {
   }
 
   /**
-   * Stop whatever the player is playing
+   * Disconnect the player from the channel
    */
-  stop() {
+  quit() {
     this.playing = false;
     this.connection.disconnect();
+  }
+
+  /**
+   * Stop whatever the player is playing
+   */
+  pause() {
+    this.playing = false;
+    this.dispatcher.pause();
+  }
+
+  /**
+   * Resume whatever the player is playing
+   */
+  resume() {
+    this.playing = true;
+    this.dispatcher.resume();
   }
 
   /**
@@ -94,9 +111,9 @@ class Player {
       this.connection = connection;
       this.playing = true;
 
-      const dispatcher = await this.connection.play(stream);
+      this.dispatcher = await this.connection.play(stream);
 
-      dispatcher.on('finish', async () => {
+      this.dispatcher.on('finish', async () => {
         this.playing = false;
         this.onFinish();
       });
@@ -113,7 +130,7 @@ class Player {
 async function checkIfStreamPlayable(stream) {
   return new Promise((resolve, reject) => {
     const download = ffmpeg(stream)
-      .audioBitrate(48)
+      .audioBitrate(96)
       .format('mp3');
 
     const verifiedDownload = download

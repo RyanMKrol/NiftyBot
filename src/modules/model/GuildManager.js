@@ -101,10 +101,10 @@ class GuildManager {
   }
 
   /**
-   * Stop the player from playing
+   * Quit the player
    */
-  stop() {
-    this.player.stop();
+  quit() {
+    this.player.quit();
   }
 
   /**

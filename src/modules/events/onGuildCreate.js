@@ -15,7 +15,9 @@ async function onGuildCreate(guild) {
         + `- \`${COMMAND_PREFIX} list\`\n`
         + `- \`${COMMAND_PREFIX} clear\`\n`
         + `- \`${COMMAND_PREFIX} skip\`\n`
-        + `- \`${COMMAND_PREFIX} stop\`\n`,
+        + `- \`${COMMAND_PREFIX} pause\`\n`
+        + `- \`${COMMAND_PREFIX} resume\`\n`
+        + `- \`${COMMAND_PREFIX} quit\`\n`,
     );
 }
 

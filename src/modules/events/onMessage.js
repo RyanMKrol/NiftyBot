@@ -1,7 +1,7 @@
 import { shortCircuitPipeline } from 'noodle-utils';
 
 import {
-  add, clear, list, remove, skip, stop,
+  add, clear, list, quit, remove, skip,
 } from '../commands';
 
 /**
@@ -10,7 +10,7 @@ import {
  * @param {module:app.Message} message The message that the user has sent
  */
 async function onMessage(message) {
-  shortCircuitPipeline(add, clear, list, remove, skip, stop)(message);
+  shortCircuitPipeline(add, clear, list, quit, remove, skip)(message);
 }
 
 export default onMessage;
