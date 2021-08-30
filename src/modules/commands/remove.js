@@ -4,7 +4,7 @@ import createGuildManagerInstance from '../model';
 const IS_REMOVE_COMMAND_REGEX = `${COMMAND_PREFIX} remove (.*)`;
 
 /**
- * Handles the list command
+ * Handles the remove command
  *
  * @param {module:app.Message} messageHook The hook that contains the command being used
  * @returns {boolean} Whether this was the command to run or not
@@ -23,10 +23,10 @@ async function remove(messageHook) {
 }
 
 /**
- * Process the command by listing the current playlist items
+ * Process the command by removing a song from the playlist
  *
  * @param {module:app.Message} messageHook The hook that contains the command being used
- * @param {string} guildId The guild that we're listing the playlist for
+ * @param {string} guildId The guild that we're removing a song from
  * @param removeIndex
  */
 async function processRemoveCommand(messageHook, guildId, removeIndex) {

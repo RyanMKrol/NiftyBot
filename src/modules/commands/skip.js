@@ -4,7 +4,7 @@ import createGuildManagerInstance from '../model';
 const IS_SKIP_COMMAND_REGEX = `${COMMAND_PREFIX} skip`;
 
 /**
- * Handles the list command
+ * Handles the skip command
  *
  * @param {module:app.Message} messageHook The hook that contains the command being used
  * @returns {boolean} Whether this was the command to run or not
