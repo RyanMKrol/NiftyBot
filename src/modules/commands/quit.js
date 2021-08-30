@@ -1,7 +1,7 @@
 import { COMMAND_PREFIX } from '../constants';
 import GUILD_MANAGER_COLLECTION from '../model';
 
-const IS_QUIT_COMMAND_REGEX = `${COMMAND_PREFIX} quit`;
+const IS_QUIT_COMMAND_REGEX = `^${COMMAND_PREFIX} quit`;
 
 /**
  * Handles the quit command

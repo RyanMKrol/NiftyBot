@@ -1,7 +1,7 @@
 import { COMMAND_PREFIX } from '../constants';
 import GUILD_MANAGER_COLLECTION from '../model';
 
-const IS_CLEAR_COMMAND_REGEX = `${COMMAND_PREFIX} clear`;
+const IS_CLEAR_COMMAND_REGEX = `^${COMMAND_PREFIX} clear`;
 
 /**
  * Handles the clear command
