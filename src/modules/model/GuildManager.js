@@ -3,6 +3,7 @@ import PLAYLIST_COLLECTION from './PlaylistCollection';
 import { CouldNotJoinChannel } from '../errors';
 
 const MAX_TITLE_OUTPUT_LENGTH = 40;
+const MAX_TITLE_OUTPUT_COUNT = 15;
 
 /**
  * GuildManager
@@ -20,11 +21,19 @@ class GuildManager {
   /**
    * Add song to playlist
    *
-   * @param {string} link Link to add to playlist
-   * @param {JSON} videoInfo Information about the video
+   * @param {object} item Object containing the link and title of the playlist item
    */
-  addToPlaylist(link, videoInfo) {
-    this.playlist.add(link, videoInfo);
+  addToPlaylist(item) {
+    this.playlist.add(item);
+  }
+
+  /**
+   * Add multiple songs to playlist
+   *
+   * @param {Array<object>} items Data to add to playlist
+   */
+  addMultipleToPlaylist(items) {
+    this.playlist.addMultiple(items);
   }
 
   /**
@@ -34,13 +43,16 @@ class GuildManager {
    */
   listSongs(responseHook) {
     const titles = this.playlist.getDisplayNames();
-    const output = titles.reduce(
+    const outputTitles = titles.slice(0, MAX_TITLE_OUTPUT_COUNT);
+    const output = outputTitles.reduce(
       (acc, val, index) => `${acc}${index + 1}: ${formatTitle(val)}\n`,
       '',
     );
 
     if (titles.length === 0) {
       responseHook.reply("Here's the current playlist:\n```There's nothing here...```");
+    } else if (titles.length >= 15) {
+      responseHook.reply(`Here's the current playlist:\n\`\`\`yaml\n${output}...\`\`\``);
     } else {
       responseHook.reply(`Here's the current playlist:\n\`\`\`yaml\n${output}\`\`\``);
     }

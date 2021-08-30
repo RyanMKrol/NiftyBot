@@ -24,7 +24,8 @@
     "fluent-ffmpeg": "^2.1.2",
     "noodle-utils": "^3.4.1",
     "opusscript": "0.0.8",
-    "ytdl-core": "^4.9.1"
+    "ytdl-core": "^4.9.1",
+    "ytpl": "^2.2.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.4",

@@ -17,16 +17,22 @@ class Playlist {
   }
 
   /**
-   * Add a link to the playlist
+   * Add an item to the playlist
    *
-   * @param {string} link the link to add to the playlist
-   * @param {JSON} videoInfo Information about the video
+   * @param {JSON} data Object contianing the link to the song, and the title of the song
    */
-  add(link, videoInfo) {
-    this.list.push({
-      link,
-      title: videoInfo.videoDetails.title,
-    });
+  add(data) {
+    this.list.push(data);
+    this.sync();
+  }
+
+  /**
+   * Add multiple items to the playlist
+   *
+   * @param {Array<JSON>} data Array containing playlist items to add
+   */
+  addMultiple(data) {
+    this.list = this.list.concat(data);
     this.sync();
   }
 

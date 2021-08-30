@@ -1,4 +1,5 @@
 import ytdl from 'ytdl-core';
+import ytpl from 'ytpl';
 
 import { COMMAND_PREFIX } from '../constants';
 import GUILD_MANAGER_COLLECTION from '../model';
@@ -42,9 +43,48 @@ async function processAddCommand(messageHook, guildId, channel, link) {
   if (videoInfo === null) return;
 
   const manager = await GUILD_MANAGER_COLLECTION.getManager(guildId);
-  manager.addToPlaylist(link, videoInfo);
-  manager.ensurePlaying(channel);
-  manager.listSongs(messageHook);
+  ytpl(link)
+    .then((playlist) => {
+      processPlaylist(manager, playlist);
+      manager.ensurePlaying(channel);
+      manager.listSongs(messageHook);
+    })
+    .catch(() => {
+      processSong(manager, link, videoInfo);
+      manager.ensurePlaying(channel);
+      manager.listSongs(messageHook);
+    });
+}
+
+/**
+ * Adds a single song to our playlist
+ *
+ * @param {GuildManager} manager Facade to playlist and player objects
+ * @param {string} link The link to the media to play
+ * @param {JSON} videoInfo Object containing information about the song
+ */
+async function processSong(manager, link, videoInfo) {
+  const playlistItem = {
+    link,
+    title: videoInfo.videoDetails.title,
+  };
+
+  manager.addToPlaylist(playlistItem);
+}
+
+/**
+ * Add a playlist of songs to our playlist
+ *
+ * @param {GuildManager} manager Facade to playlist and player objects
+ * @param {JSON} playlistInfo Data around a playlist
+ */
+async function processPlaylist(manager, playlistInfo) {
+  const playlistItems = playlistInfo.items.map((item) => ({
+    link: item.shortUrl,
+    title: item.title,
+  }));
+
+  manager.addMultipleToPlaylist(playlistItems);
 }
 
 /**
