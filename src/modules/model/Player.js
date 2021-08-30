@@ -29,6 +29,7 @@ class Player {
     this.connection = undefined;
     this.dispatcher = undefined;
     this.playing = false;
+    this.paused = false;
     this.onFinish = onFinish;
   }
 
@@ -54,7 +55,9 @@ class Player {
    * Stop whatever the player is playing
    */
   pause() {
-    this.playing = false;
+    if (this.paused) return;
+    this.paused = true;
+
     this.dispatcher.pause();
   }
 
@@ -62,7 +65,14 @@ class Player {
    * Resume whatever the player is playing
    */
   resume() {
-    this.playing = true;
+    if (!this.paused) return;
+    this.paused = false;
+
+    // HACK: For some reason, the resume method on the StreamDispatcher object doesn't work
+    // until you pause the content, and resume it again. You can find details here:
+    // https://github.com/discordjs/discord.js/issues/5300
+    this.dispatcher.resume();
+    this.dispatcher.pause();
     this.dispatcher.resume();
   }
 
@@ -110,6 +120,7 @@ class Player {
     channel.join().then(async (connection) => {
       this.connection = connection;
       this.playing = true;
+      this.paused = false;
 
       this.dispatcher = await this.connection.play(stream);
 

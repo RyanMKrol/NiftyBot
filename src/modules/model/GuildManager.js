@@ -108,6 +108,20 @@ class GuildManager {
   }
 
   /**
+   * Pause the player
+   */
+  pause() {
+    this.player.pause();
+  }
+
+  /**
+   * Resume the player
+   */
+  resume() {
+    this.player.resume();
+  }
+
+  /**
    * Informs the player that it's been disconnected
    */
   updatePlayerDisconnected() {
