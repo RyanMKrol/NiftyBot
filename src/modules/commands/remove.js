@@ -27,7 +27,7 @@ async function remove(messageHook) {
  *
  * @param {module:app.Message} messageHook The hook that contains the command being used
  * @param {string} guildId The guild that we're removing a song from
- * @param removeIndex
+ * @param {number} removeIndex The number of song to remove from the playlist
  */
 async function processRemoveCommand(messageHook, guildId, removeIndex) {
   const manager = await GUILD_MANAGER_COLLECTION.getManager(guildId);

@@ -45,7 +45,8 @@ class Player {
    * Stop whatever the player is playing
    */
   stop() {
-    console.log(this.connection);
+    this.playing = false;
+    this.connection.disconnect();
   }
 
   /**
@@ -66,7 +67,7 @@ class Player {
   async playStream(channel, link) {
     const stream = ytdl(link, { filter: 'audioonly' });
 
-    return checkIfStreamPlayable(stream)
+    checkIfStreamPlayable(stream)
       .then((playableStream) => {
         this.joinChannelAndStream(channel, playableStream);
       })
@@ -89,7 +90,6 @@ class Player {
       const dispatcher = await this.connection.play(stream);
 
       dispatcher.on('finish', async () => {
-        console.log('finished playing this');
         this.playing = false;
         this.onFinish();
       });
