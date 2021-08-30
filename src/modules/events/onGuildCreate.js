@@ -13,6 +13,7 @@ async function onGuildCreate(guild) {
         + `- \`${COMMAND_PREFIX} add <youtube_link>\`\n`
         + `- \`${COMMAND_PREFIX} remove <playlist_item_number>\`\n`
         + `- \`${COMMAND_PREFIX} list\`\n`
+        + `- \`${COMMAND_PREFIX} clear\`\n`
         + `- \`${COMMAND_PREFIX} skip\`\n`
         + `- \`${COMMAND_PREFIX} stop\`\n`,
     );

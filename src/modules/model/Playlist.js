@@ -37,6 +37,14 @@ class Playlist {
   }
 
   /**
+   * Remove all links from playlist
+   */
+  clear() {
+    this.list = [];
+    this.sync();
+  }
+
+  /**
    * Gets the playlist items
    *
    * @returns {Array<string>} Array of playlist items

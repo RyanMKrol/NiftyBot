@@ -43,6 +43,13 @@ class GuildManager {
   }
 
   /**
+   * Remove all songs from playlist
+   */
+  clearPlaylist() {
+    this.playlist.clear();
+  }
+
+  /**
    * Ensures that the player is currently doing something
    *
    * @param {module:app.VoiceChannel} channel The VoiceChannel to play in
