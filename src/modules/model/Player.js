@@ -20,10 +20,13 @@ ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 class Player {
   /**
    * Constructor
+   *
+   * @param {Function} onFinish Method to call after playing a song
    */
-  constructor() {
+  constructor(onFinish) {
     this.connection = undefined;
     this.playing = false;
+    this.onFinish = onFinish;
   }
 
   /**
@@ -85,8 +88,9 @@ class Player {
       const dispatcher = await this.connection.play(stream);
 
       dispatcher.on('finish', async () => {
+        console.log('finished playing this');
         this.playing = false;
-        console.log('finished playing');
+        this.onFinish();
       });
     });
   }

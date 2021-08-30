@@ -10,8 +10,9 @@ class GuildManager {
    * @param {Playlist} playlist The playlist
    */
   constructor(player, playlist) {
-    this.player = player;
+    this.player = new Player(() => this.next());
     this.playlist = playlist;
+    this.currentChannel = undefined;
   }
 
   /**
@@ -63,7 +64,16 @@ class GuildManager {
 
     if (playlistItems.length > 0 && !this.player.isPlaying()) {
       this.player.play(channel, playlistItems[0]);
+      this.currentChannel = channel;
     }
+  }
+
+  /**
+   * Play the next song in the playlist
+   */
+  next() {
+    this.playlist.remove(1);
+    this.play();
   }
 
   /**
@@ -81,10 +91,9 @@ class GuildManager {
  * @returns {GuildManager} A GuildManager
  */
 async function createGuildManagerInstance(guildId) {
-  const player = new Player();
   const playlist = await PLAYLIST_COLLECTION.getPlaylist(guildId);
 
-  return new GuildManager(player, playlist);
+  return new GuildManager(playlist);
 }
 
 export default createGuildManagerInstance;
