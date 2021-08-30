@@ -1,5 +1,5 @@
 import { COMMAND_PREFIX } from '../constants';
-import createGuildManagerInstance from '../model';
+import GUILD_MANAGER_COLLECTION from '../model';
 
 const IS_LIST_COMMAND_REGEX = `${COMMAND_PREFIX} list`;
 
@@ -27,7 +27,7 @@ async function list(messageHook) {
  * @param {string} guildId The guild that we're listing the playlist for
  */
 async function processListCommand(messageHook, guildId) {
-  const manager = await createGuildManagerInstance(guildId);
+  const manager = await GUILD_MANAGER_COLLECTION.getManager(guildId);
 
   const playlistData = manager.listSongs();
 

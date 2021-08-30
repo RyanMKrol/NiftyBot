@@ -1,5 +1,5 @@
 import { COMMAND_PREFIX } from '../constants';
-import createGuildManagerInstance from '../model';
+import GUILD_MANAGER_COLLECTION from '../model';
 
 const IS_STOP_COMMAND_REGEX = `${COMMAND_PREFIX} stop`;
 
@@ -27,7 +27,7 @@ async function stop(messageHook) {
  * @param {string} guildId The guild that we're processing the command for
  */
 async function processStopCommand(messageHook, guildId) {
-  const manager = await createGuildManagerInstance(guildId);
+  const manager = await GUILD_MANAGER_COLLECTION.getManager(guildId);
   manager.stop();
 }
 
