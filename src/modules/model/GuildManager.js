@@ -55,12 +55,14 @@ class GuildManager {
 
   /**
    * Ensure the player is playing
+   *
+   * @param {string} channelId The channel to play in
    */
-  play() {
+  play(channelId) {
     const playlistItems = this.playlist.get();
 
     if (playlistItems.length > 0 && !this.player.isPlaying()) {
-      this.player.play(playlistItems[0]);
+      this.player.play(channelId, playlistItems[0]);
     }
   }
 

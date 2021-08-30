@@ -14,11 +14,12 @@ const IS_ADD_COMMAND_REGEX = `${COMMAND_PREFIX} add (.*)`;
 async function add(messageHook) {
   const command = messageHook.content;
   const guildId = messageHook.channel.guild.id;
+  const channelId = messageHook.member.voice.channelID;
   const link = isAdd(command);
 
   if (link === null) return false;
 
-  processAddCommand(messageHook, guildId, link);
+  processAddCommand(messageHook, guildId, channelId, link);
 
   return true;
 }
@@ -28,16 +29,17 @@ async function add(messageHook) {
  *
  * @param {module:app.Message} messageHook The hook that contains the command being used
  * @param {string} guildId The guild that we're adding a link for
+ * @param {string} channelId The channel to play in
  * @param {string} link The link to a youtube video
  */
-async function processAddCommand(messageHook, guildId, link) {
+async function processAddCommand(messageHook, guildId, channelId, link) {
   if (!(await validateYoutubeLink(messageHook, link))) return;
   if (!(await validateYoutubeVideoAvailable(messageHook, link))) return;
   if (!(await validateUserState(messageHook))) return;
 
   const manager = await createGuildManagerInstance(guildId);
   manager.addToPlaylist(link);
-  manager.play();
+  manager.play(channelId);
 }
 
 /**
