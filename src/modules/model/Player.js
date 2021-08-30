@@ -34,7 +34,7 @@ class Player {
   /**
    * Add a link to the playlist
    *
-   * @param channel
+   * @param {module:app.VoiceChannel} channel The voice channel to play in
    * @param {string} link the link to add to the playlist
    */
   play(channel, link) {
@@ -60,7 +60,7 @@ class Player {
   /**
    * Play a stream in the specified voice channel
    *
-   * @param {string} channel The channel to play in
+   * @param {module:app.VoiceChannel} channel The channel to play in
    * @param {string} link A link to the content to play
    */
   async playStream(channel, link) {
@@ -85,7 +85,7 @@ class Player {
     channel.join().then(async (connection) => {
       this.connection = connection;
       this.playing = true;
-      console.log(this.connection);
+
       const dispatcher = await this.connection.play(stream);
 
       dispatcher.on('finish', async () => {

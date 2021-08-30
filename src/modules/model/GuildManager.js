@@ -43,9 +43,20 @@ class GuildManager {
   }
 
   /**
+   * Ensures that the player is currently doing something
+   *
+   * @param {module:app.VoiceChannel} channel The VoiceChannel to play in
+   */
+  ensurePlaying(channel) {
+    if (!this.player.isPlaying()) {
+      this.play(channel);
+    }
+  }
+
+  /**
    * Ensure the player is playing
    *
-   * @param {string} channel The channel to play in
+   * @param {module:app.VoiceChannel} channel The VoiceChannel to play in
    */
   play(channel) {
     const playlistItems = this.playlist.get();
@@ -55,7 +66,7 @@ class GuildManager {
       throw new CouldNotJoinChannel();
     }
 
-    if (playlistItems.length > 0 && !this.player.isPlaying()) {
+    if (playlistItems.length > 0) {
       this.player.play(channelToUse, playlistItems[0]);
       this.currentChannel = channelToUse;
     }

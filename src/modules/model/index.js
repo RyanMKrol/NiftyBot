@@ -1,1 +1,1 @@
-export { default } from './GuildManager';
+export { default } from './GuildManagerCollection';
