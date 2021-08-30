@@ -54,6 +54,17 @@ class GuildManager {
   }
 
   /**
+   * Ensure the player is playing
+   */
+  play() {
+    const playlistItems = this.playlist.get();
+
+    if (playlistItems.length > 0 && !this.player.isPlaying()) {
+      this.player.play(playlistItems[0]);
+    }
+  }
+
+  /**
    * Stop the player from playing
    */
   stop() {

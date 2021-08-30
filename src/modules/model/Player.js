@@ -23,6 +23,7 @@ class Player {
    */
   constructor() {
     this.connection = undefined;
+    this.playing = false;
   }
 
   /**
@@ -40,6 +41,15 @@ class Player {
    */
   stop() {
     console.log(this.connection);
+  }
+
+  /**
+   * Return if the player is playing
+   *
+   * @returns {boolean} Whether the player is playing
+   */
+  isPlaying() {
+    return this.playing;
   }
 
   /**
@@ -70,10 +80,12 @@ class Player {
   joinChannelAndStream(channel, stream) {
     channel.join().then(async (connection) => {
       this.connection = connection;
+      this.playing = true;
       console.log(this.connection);
       const dispatcher = await this.connection.play(stream);
 
       dispatcher.on('finish', async () => {
+        this.playing = false;
         console.log('finished playing');
       });
     });

@@ -37,6 +37,7 @@ async function processAddCommand(messageHook, guildId, link) {
 
   const manager = await createGuildManagerInstance(guildId);
   manager.addToPlaylist(link);
+  manager.play();
 }
 
 /**
