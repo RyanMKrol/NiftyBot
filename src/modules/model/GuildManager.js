@@ -43,18 +43,6 @@ class GuildManager {
   }
 
   /**
-   * Skip the current track
-   */
-  skip() {
-    this.playlist.remove(0);
-
-    const remaining = this.playlist.get();
-    if (remaining.length > 0) {
-      this.player.play(remaining[0]);
-    }
-  }
-
-  /**
    * Ensure the player is playing
    *
    * @param {string} channel The channel to play in

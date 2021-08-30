@@ -28,7 +28,7 @@ async function skip(messageHook) {
  */
 async function processSkipCommand(messageHook, guildId) {
   const manager = await createGuildManagerInstance(guildId);
-  manager.skip();
+  manager.next();
 }
 
 /**
