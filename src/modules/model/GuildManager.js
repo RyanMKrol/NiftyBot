@@ -19,9 +19,10 @@ class GuildManager {
    * Add song to playlist
    *
    * @param {string} link Link to add to playlist
+   * @param {JSON} videoInfo Information about the video
    */
-  addToPlaylist(link) {
-    this.playlist.add(link);
+  addToPlaylist(link, videoInfo) {
+    this.playlist.add(link, videoInfo);
   }
 
   /**
@@ -30,7 +31,7 @@ class GuildManager {
    * @returns {Array<string>} The songs in the playlist
    */
   listSongs() {
-    return this.playlist.get();
+    return this.playlist.getDisplayNames();
   }
 
   /**
@@ -66,7 +67,7 @@ class GuildManager {
    * @param {module:app.VoiceChannel} channel The VoiceChannel to play in
    */
   play(channel) {
-    const playlistItems = this.playlist.get();
+    const playlistItems = this.playlist.getLinks();
     const channelToUse = this.currentChannel || channel;
 
     if (!channelToUse) {

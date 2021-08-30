@@ -2,7 +2,7 @@ import { COMMAND_PREFIX } from '../constants';
 import GUILD_MANAGER_COLLECTION from '../model';
 
 const IS_LIST_COMMAND_REGEX = `${COMMAND_PREFIX} list`;
-
+const MAX_TITLE_OUTPUT_LENGTH = 40;
 /**
  * Handles the list command
  *
@@ -31,9 +31,26 @@ async function processListCommand(messageHook, guildId) {
 
   const playlistData = manager.listSongs();
 
-  const output = playlistData.reduce((acc, val, index) => `${acc}${index + 1}. ${val}\n`, '');
+  const output = playlistData.reduce(
+    (acc, val, index) => `${acc}${index + 1}: ${formatTitle(val)}\n`,
+    '',
+  );
 
-  messageHook.reply(`Here's the current playlist:\n${output}`);
+  messageHook.reply(`Here's the current playlist:\n\`\`\`yaml\n${output}\`\`\``);
+}
+
+/**
+ * Method to format the video titles to a uniform output
+ *
+ * @param {string} title Title of the video we're playing
+ * @returns {string} A formatted title
+ */
+function formatTitle(title) {
+  if (title.length <= MAX_TITLE_OUTPUT_LENGTH) {
+    return title;
+  }
+
+  return `${title.substring(0, MAX_TITLE_OUTPUT_LENGTH - 3)}...`;
 }
 
 /**

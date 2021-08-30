@@ -20,9 +20,13 @@ class Playlist {
    * Add a link to the playlist
    *
    * @param {string} link the link to add to the playlist
+   * @param {JSON} videoInfo Information about the video
    */
-  add(link) {
-    this.list.push(link);
+  add(link, videoInfo) {
+    this.list.push({
+      link,
+      title: videoInfo.videoDetails.title,
+    });
     this.sync();
   }
 
@@ -45,12 +49,21 @@ class Playlist {
   }
 
   /**
-   * Gets the playlist items
+   * Gets the playlist items' links
    *
-   * @returns {Array<string>} Array of playlist items
+   * @returns {Array<string>} Array of links
    */
-  get() {
-    return this.list;
+  getLinks() {
+    return this.list.map((item) => item.link);
+  }
+
+  /**
+   * Gets the playlist items' display names
+   *
+   * @returns {Array<string>} Array of display names
+   */
+  getDisplayNames() {
+    return this.list.map((item) => item.title);
   }
 
   /**

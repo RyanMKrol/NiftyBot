@@ -35,12 +35,14 @@ async function add(messageHook) {
  * @param {string} link The link to a youtube video
  */
 async function processAddCommand(messageHook, guildId, channel, link) {
-  if (!(await validateYoutubeLink(messageHook, link))) return;
-  if (!(await validateYoutubeVideoAvailable(messageHook, link))) return;
   if (!(await validateUserState(messageHook))) return;
+  if (!(await validateYoutubeLink(messageHook, link))) return;
+
+  const videoInfo = await validateYoutubeVideoAvailable(messageHook, link);
+  if (videoInfo === null) return;
 
   const manager = await GUILD_MANAGER_COLLECTION.getManager(guildId);
-  manager.addToPlaylist(link);
+  manager.addToPlaylist(link, videoInfo);
   manager.ensurePlaying(channel);
 }
 
@@ -90,7 +92,7 @@ async function validateYoutubeVideoAvailable(responseHook, link) {
     );
   }
 
-  return isAvailable;
+  return isAvailable ? information : null;
 }
 
 /**
