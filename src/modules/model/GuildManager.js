@@ -2,6 +2,8 @@ import Player from './Player';
 import PLAYLIST_COLLECTION from './PlaylistCollection';
 import { CouldNotJoinChannel } from '../errors';
 
+const MAX_TITLE_OUTPUT_LENGTH = 40;
+
 /**
  * GuildManager
  */
@@ -28,10 +30,20 @@ class GuildManager {
   /**
    * List all songs in playlist
    *
-   * @returns {Array<string>} The songs in the playlist
+   * @param {module:app.Message} responseHook The hook to reply with
    */
-  listSongs() {
-    return this.playlist.getDisplayNames();
+  listSongs(responseHook) {
+    const titles = this.playlist.getDisplayNames();
+    const output = titles.reduce(
+      (acc, val, index) => `${acc}${index + 1}: ${formatTitle(val)}\n`,
+      '',
+    );
+
+    if (titles.length === 0) {
+      responseHook.reply("Here's the current playlist:\n```There's nothing here...```");
+    } else {
+      responseHook.reply(`Here's the current playlist:\n\`\`\`yaml\n${output}\`\`\``);
+    }
   }
 
   /**
@@ -101,6 +113,20 @@ class GuildManager {
   updatePlayerDisconnected() {
     this.player.setDisconnectedState();
   }
+}
+
+/**
+ * Method to format the video titles to a uniform output
+ *
+ * @param {string} title Title of the video we're playing
+ * @returns {string} A formatted title
+ */
+function formatTitle(title) {
+  if (title.length <= MAX_TITLE_OUTPUT_LENGTH) {
+    return title;
+  }
+
+  return `${title.substring(0, MAX_TITLE_OUTPUT_LENGTH - 3)}...`;
 }
 
 /**

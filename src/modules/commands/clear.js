@@ -29,6 +29,7 @@ async function clear(messageHook) {
 async function processClearCommand(messageHook, guildId) {
   const manager = await GUILD_MANAGER_COLLECTION.getManager(guildId);
   manager.clearPlaylist();
+  manager.listSongs(messageHook);
 }
 
 /**

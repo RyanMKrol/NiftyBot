@@ -44,6 +44,7 @@ async function processAddCommand(messageHook, guildId, channel, link) {
   const manager = await GUILD_MANAGER_COLLECTION.getManager(guildId);
   manager.addToPlaylist(link, videoInfo);
   manager.ensurePlaying(channel);
+  manager.listSongs(messageHook);
 }
 
 /**

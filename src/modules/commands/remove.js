@@ -32,6 +32,7 @@ async function remove(messageHook) {
 async function processRemoveCommand(messageHook, guildId, removeIndex) {
   const manager = await GUILD_MANAGER_COLLECTION.getManager(guildId);
   manager.removeFromPlaylist(removeIndex);
+  manager.listSongs(messageHook);
 }
 
 /**

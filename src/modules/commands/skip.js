@@ -29,6 +29,7 @@ async function skip(messageHook) {
 async function processSkipCommand(messageHook, guildId) {
   const manager = await GUILD_MANAGER_COLLECTION.getManager(guildId);
   manager.next();
+  manager.listSongs(messageHook);
 }
 
 /**
