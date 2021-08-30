@@ -33,6 +33,7 @@ async function add(messageHook) {
 async function processAddCommand(messageHook, guildId, link) {
   if (!(await validateYoutubeLink(messageHook, link))) return;
   if (!(await validateYoutubeVideoAvailable(messageHook, link))) return;
+  if (!(await validateUserState(messageHook))) return;
 
   const playlist = await PLAYLIST_COLLECTION.getPlaylist(guildId);
   playlist.add(link);
@@ -85,6 +86,23 @@ async function validateYoutubeVideoAvailable(responseHook, link) {
   }
 
   return isAvailable;
+}
+
+/**
+ * Method to validate if user adding a playlist item is in the voice channel
+ *
+ * @param {module:app.Message} responseHook The hook to send a message with if the user is
+ * not in a valid state
+ * @returns {boolean} Whether the user is in a voice channel
+ */
+async function validateUserState(responseHook) {
+  const isUserInVoiceChannel = responseHook.member.voice.channelID !== null;
+
+  if (!isUserInVoiceChannel) {
+    await responseHook.reply("You're not in a voice channel!");
+  }
+
+  return isUserInVoiceChannel;
 }
 
 export default add;
