@@ -3,6 +3,7 @@ import GUILD_MANAGER_COLLECTION from '../model';
 
 const IS_LIST_COMMAND_REGEX = `${COMMAND_PREFIX} list`;
 const MAX_TITLE_OUTPUT_LENGTH = 40;
+
 /**
  * Handles the list command
  *

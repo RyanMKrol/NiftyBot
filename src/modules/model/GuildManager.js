@@ -94,6 +94,13 @@ class GuildManager {
   stop() {
     this.player.stop();
   }
+
+  /**
+   * Informs the player that it's been disconnected
+   */
+  updatePlayerDisconnected() {
+    this.player.setDisconnectedState();
+  }
 }
 
 /**

@@ -59,6 +59,13 @@ class Player {
   }
 
   /**
+   * Informs the player that it's been disconnected
+   */
+  setDisconnectedState() {
+    this.playing = false;
+  }
+
+  /**
    * Play a stream in the specified voice channel
    *
    * @param {module:app.VoiceChannel} channel The channel to play in
