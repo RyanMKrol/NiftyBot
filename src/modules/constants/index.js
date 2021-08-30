@@ -3,7 +3,7 @@ import AWS_CREDENTIALS from '../../../credentials/aws.json';
 import DISCORD_CREDENTIALS from '../../../credentials/discord.json';
 
 // command constants
-const COMMAND_PREFIX = '!nb';
+const COMMAND_PREFIX = '!';
 const PLAYLISTS_BUCKET_NAME = 'nifty-bot-playlists';
 
 const BOT_ID = '881636306092982302';

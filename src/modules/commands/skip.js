@@ -1,7 +1,7 @@
 import { COMMAND_PREFIX } from '../constants';
 import GUILD_MANAGER_COLLECTION from '../model';
 
-const IS_SKIP_COMMAND_REGEX = `^${COMMAND_PREFIX} skip`;
+const IS_SKIP_COMMAND_REGEX = `^${COMMAND_PREFIX}skip`;
 
 /**
  * Handles the skip command

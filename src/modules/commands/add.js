@@ -3,7 +3,7 @@ import ytdl from 'ytdl-core';
 import { COMMAND_PREFIX } from '../constants';
 import GUILD_MANAGER_COLLECTION from '../model';
 
-const IS_ADD_COMMAND_REGEX = `^${COMMAND_PREFIX} add (.*)`;
+const IS_ADD_COMMAND_REGEX = `^${COMMAND_PREFIX}add (.*)`;
 
 /**
  * Handles the add command

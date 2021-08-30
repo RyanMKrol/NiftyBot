@@ -1,7 +1,7 @@
 import { COMMAND_PREFIX } from '../constants';
 import GUILD_MANAGER_COLLECTION from '../model';
 
-const IS_REMOVE_COMMAND_REGEX = `^${COMMAND_PREFIX} remove (.*)`;
+const IS_REMOVE_COMMAND_REGEX = `^${COMMAND_PREFIX}remove (.*)`;
 
 /**
  * Handles the remove command

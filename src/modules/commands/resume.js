@@ -1,7 +1,7 @@
 import { COMMAND_PREFIX } from '../constants';
 import GUILD_MANAGER_COLLECTION from '../model';
 
-const IS_RESUME_COMMAND_REGEX = `^${COMMAND_PREFIX} resume`;
+const IS_RESUME_COMMAND_REGEX = `^${COMMAND_PREFIX}resume`;
 
 /**
  * Handles the resume command

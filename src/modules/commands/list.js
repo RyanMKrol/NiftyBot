@@ -1,7 +1,7 @@
 import { COMMAND_PREFIX } from '../constants';
 import GUILD_MANAGER_COLLECTION from '../model';
 
-const IS_LIST_COMMAND_REGEX = `^${COMMAND_PREFIX} list`;
+const IS_LIST_COMMAND_REGEX = `^${COMMAND_PREFIX}list`;
 
 /**
  * Handles the list command

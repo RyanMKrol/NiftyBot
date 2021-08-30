@@ -1,7 +1,7 @@
 import { COMMAND_PREFIX } from '../constants';
 import GUILD_MANAGER_COLLECTION from '../model';
 
-const IS_PAUSE_COMMAND_REGEX = `^${COMMAND_PREFIX} pause`;
+const IS_PAUSE_COMMAND_REGEX = `^${COMMAND_PREFIX}pause`;
 
 /**
  * Handles the pause command
