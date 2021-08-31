@@ -4,7 +4,7 @@ import ytpl from 'ytpl';
 import { COMMAND_PREFIX } from '../constants';
 import GUILD_MANAGER_COLLECTION from '../model';
 
-const IS_ADD_COMMAND_REGEX = `^${COMMAND_PREFIX}add (.*)`;
+const IS_ADD_COMMAND_REGEX = `^${COMMAND_PREFIX}(add|play) (.*)`;
 
 /**
  * Handles the add command
@@ -95,7 +95,7 @@ async function processPlaylist(manager, playlistInfo) {
  */
 function isAdd(command) {
   const parsedValues = new RegExp(IS_ADD_COMMAND_REGEX).exec(command);
-  return parsedValues === null ? null : parsedValues[1];
+  return parsedValues === null ? null : parsedValues[2];
 }
 
 /**
