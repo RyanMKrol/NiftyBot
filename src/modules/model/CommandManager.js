@@ -1,5 +1,5 @@
 import { shortCircuitPipeline } from 'noodle-utils';
-import { EXAMPLE, LIST } from '../commands';
+import * as COMMANDS from '../commands';
 
 /**
  * CommandManager
@@ -9,7 +9,7 @@ class CommandManager {
    * constructor
    */
   constructor() {
-    this.commands = [EXAMPLE, LIST];
+    this.commands = [...Object.values(COMMANDS)];
   }
 
   /**
