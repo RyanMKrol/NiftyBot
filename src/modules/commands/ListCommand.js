@@ -6,19 +6,19 @@ import { COMMAND_PREFIX } from '../constants';
 import { GUILD_MANAGER_COLLECTION } from '../model';
 
 /**
- * ExampleCommand
+ * ListCommand
  */
-export class ExampleCommand extends BaseCommand {
+export class ListCommand extends BaseCommand {
   /**
    * Constructor
    */
   constructor() {
-    const patterns = [`^${COMMAND_PREFIX}example`];
+    const patterns = [`^${COMMAND_PREFIX}list`];
     super(patterns);
   }
 
   /**
-   * Process the example command
+   * Process the list command
    *
    * @param {module:app.Message} messageHook The original message hook
    */
@@ -30,7 +30,7 @@ export class ExampleCommand extends BaseCommand {
   }
 
   /**
-   * Verifies that the current command is a example command
+   * Verifies that the current command is a list command
    *
    * @param {string} command The command being used
    * @returns {Array<any>} Array of parsed parameters
@@ -41,6 +41,6 @@ export class ExampleCommand extends BaseCommand {
   }
 }
 
-const EXAMPLE = new ExampleCommand();
+const LIST = new ListCommand();
 
-export default EXAMPLE;
+export default LIST;
