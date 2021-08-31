@@ -2,7 +2,7 @@ import ytdl from 'ytdl-core';
 import ytpl from 'ytpl';
 
 import { COMMAND_PREFIX } from '../constants';
-import GUILD_MANAGER_COLLECTION from '../model';
+import { GUILD_MANAGER_COLLECTION } from '../model';
 
 const IS_ADD_COMMAND_REGEX = `^${COMMAND_PREFIX}(add|play) (.*)`;
 

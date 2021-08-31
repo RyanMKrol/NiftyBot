@@ -1,5 +1,5 @@
 import { BOT_ID } from '../constants';
-import GUILD_MANAGER_COLLECTION from '../model';
+import { GUILD_MANAGER_COLLECTION } from '../model';
 
 /**
  * Method to handle when the voice state changes in any discord server this bot is in
