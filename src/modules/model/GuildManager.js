@@ -101,6 +101,8 @@ class GuildManager {
     if (playlistItems.length > 0) {
       this.player.play(channelToUse, playlistItems[0]);
       this.currentChannel = channelToUse;
+    } else {
+      this.quit();
     }
   }
 
