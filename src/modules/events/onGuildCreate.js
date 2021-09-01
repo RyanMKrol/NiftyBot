@@ -10,7 +10,7 @@ async function onGuildCreate(guild) {
   guild.channels.cache
     .find((t) => t.name === 'general')
     .send(
-      `Thanks for inviting my bot to your server!\nHere are the commands:\`\`\`${commandsOutput}\`\`\`\n`,
+      `Thanks for inviting my bot to your server!\nHere are the commands:\`\`\`yaml\n${commandsOutput}\`\`\`\n`,
     );
 }
 
