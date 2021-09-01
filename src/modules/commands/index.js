@@ -1,3 +1,4 @@
+export { default as ADD } from './AddCommand';
 export { default as CLEAR } from './ClearCommand';
 export { default as HELP } from './HelpCommand';
 export { default as LIST } from './ListCommand';
