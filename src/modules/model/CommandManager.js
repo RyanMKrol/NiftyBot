@@ -9,7 +9,7 @@ class CommandManager {
    * constructor
    */
   constructor() {
-    this.commands = [...Object.values(COMMANDS)];
+    this.commands = COMMANDS;
   }
 
   /**
@@ -18,12 +18,16 @@ class CommandManager {
    * @param {module:app.Message} messageHook Message containing a potential command
    */
   processCommand(messageHook) {
-    const handleMethods = this.commands.map((command) => (hook) => {
-      const shouldHandleResult = command.shouldHandle(hook);
+    const handleMethods = Object.keys(this.commands).map((command) => (hook) => {
+      const shouldHandleResult = this.commands[command].shouldHandle(hook);
 
       // we have data, which means this command should handle the request
       if (shouldHandleResult !== null) {
-        command.process(hook, ...shouldHandleResult);
+        if (command === 'HELP') {
+          this.commands[command].process(hook, this.helpData());
+        } else {
+          this.commands[command].process(hook, ...shouldHandleResult);
+        }
         return true;
       }
 
@@ -33,6 +37,24 @@ class CommandManager {
     // short circuit pipeline runs methods until it sees true, it will run the above handleMethods
     // until one of them processes the message and returns true
     shortCircuitPipeline(...handleMethods)(messageHook);
+  }
+
+  /**
+   * Creates the data used for the help command
+   *
+   * @returns {string} The help command output
+   */
+  helpData() {
+    return Object.keys(this.commands).reduce((outerAcc, command) => {
+      const patterns = this.commands[command].getPatterns();
+
+      const output = patterns.reduce(
+        (innerAcc, pattern) => `${innerAcc}${command} - ${pattern}\n`,
+        '',
+      );
+
+      return outerAcc + output;
+    }, '');
   }
 }
 
