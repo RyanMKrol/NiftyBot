@@ -1,4 +1,4 @@
-import { BOT_ID } from '../constants';
+import { BOT_USER_ID } from '../constants';
 import { GUILD_MANAGER_COLLECTION } from '../model';
 
 /**
@@ -30,7 +30,7 @@ function isBotInVoiceChannel(channels) {
   channels.forEach((channel) => {
     if (channel.type === 'voice') {
       channel.members.forEach((member, memberId) => {
-        if (memberId === BOT_ID) {
+        if (memberId === BOT_USER_ID) {
           found = true;
         }
       });

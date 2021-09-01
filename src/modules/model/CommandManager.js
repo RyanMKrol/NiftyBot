@@ -24,7 +24,7 @@ class CommandManager {
       // we have data, which means this command should handle the request
       if (shouldHandleResult !== null) {
         if (command === 'HELP') {
-          this.commands[command].process(hook, this.helpData());
+          this.commands[command].process(hook, this.getHelpData());
         } else {
           this.commands[command].process(hook, ...shouldHandleResult);
         }
@@ -44,7 +44,7 @@ class CommandManager {
    *
    * @returns {string} The help command output
    */
-  helpData() {
+  getHelpData() {
     return Object.keys(this.commands).reduce((outerAcc, command) => {
       const patterns = this.commands[command].getDisplayPatterns();
 
