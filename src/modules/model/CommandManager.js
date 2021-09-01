@@ -45,11 +45,16 @@ class CommandManager {
    * @returns {string} The help command output
    */
   getHelpData() {
+    const keyLength = Object.keys(this.commands).reduce(
+      (acc, commandName) => Math.max(acc, commandName.length),
+      0,
+    );
+
     return Object.keys(this.commands).reduce((outerAcc, command) => {
       const patterns = this.commands[command].getDisplayPatterns();
 
       const output = patterns.reduce(
-        (innerAcc, pattern) => `${innerAcc}${command} - ${pattern}\n`,
+        (innerAcc, pattern) => `${innerAcc}${`${command}:`.padEnd(keyLength + 1, ' ')} ${pattern}\n`,
         '',
       );
 

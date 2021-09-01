@@ -28,7 +28,7 @@ export class HelpCommand extends BaseCommand {
    * @param {string} helpData String containing list of commands we can use
    */
   async process(messageHook, helpData) {
-    messageHook.reply(`Here are the commands:\n\`\`\`${helpData}\`\`\`\n`);
+    messageHook.reply(`Here are the commands:\n\`\`\`yaml\n${helpData}\`\`\`\n`);
   }
 
   /**
