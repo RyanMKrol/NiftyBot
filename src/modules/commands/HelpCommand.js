@@ -12,7 +12,12 @@ export class HelpCommand extends BaseCommand {
    * Constructor
    */
   constructor() {
-    const patterns = [`^${COMMAND_PREFIX}help`];
+    const patterns = [
+      {
+        pattern: `^${COMMAND_PREFIX}help`,
+        display: `${COMMAND_PREFIX}help`,
+      },
+    ];
     super(patterns);
   }
 

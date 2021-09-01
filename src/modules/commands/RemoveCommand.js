@@ -13,7 +13,12 @@ export class RemoveCommand extends BaseCommand {
    * Constructor
    */
   constructor() {
-    const patterns = [`^${COMMAND_PREFIX}remove (.*)`];
+    const patterns = [
+      {
+        pattern: `^${COMMAND_PREFIX}remove (.*)`,
+        display: `${COMMAND_PREFIX}remove <playlist_item_number>`,
+      },
+    ];
     super(patterns);
   }
 

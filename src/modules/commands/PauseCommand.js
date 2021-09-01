@@ -13,7 +13,12 @@ export class PauseCommand extends BaseCommand {
    * Constructor
    */
   constructor() {
-    const patterns = [`^${COMMAND_PREFIX}pause`];
+    const patterns = [
+      {
+        pattern: `^${COMMAND_PREFIX}pause`,
+        display: `${COMMAND_PREFIX}pause`,
+      },
+    ];
     super(patterns);
   }
 

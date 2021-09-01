@@ -13,7 +13,12 @@ export class SkipCommand extends BaseCommand {
    * Constructor
    */
   constructor() {
-    const patterns = [`^${COMMAND_PREFIX}skip`];
+    const patterns = [
+      {
+        pattern: `^${COMMAND_PREFIX}skip`,
+        display: `${COMMAND_PREFIX}skip`,
+      },
+    ];
     super(patterns);
   }
 

@@ -13,7 +13,12 @@ export class ClearCommand extends BaseCommand {
    * Constructor
    */
   constructor() {
-    const patterns = [`^${COMMAND_PREFIX}clear`];
+    const patterns = [
+      {
+        pattern: `^${COMMAND_PREFIX}clear`,
+        display: `${COMMAND_PREFIX}clear`,
+      },
+    ];
     super(patterns);
   }
 

@@ -13,7 +13,12 @@ export class ListCommand extends BaseCommand {
    * Constructor
    */
   constructor() {
-    const patterns = [`^${COMMAND_PREFIX}list`];
+    const patterns = [
+      {
+        pattern: `^${COMMAND_PREFIX}list`,
+        display: `${COMMAND_PREFIX}list`,
+      },
+    ];
     super(patterns);
   }
 

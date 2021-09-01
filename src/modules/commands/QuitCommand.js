@@ -13,7 +13,12 @@ export class QuitCommand extends BaseCommand {
    * Constructor
    */
   constructor() {
-    const patterns = [`^${COMMAND_PREFIX}quit`];
+    const patterns = [
+      {
+        pattern: `^${COMMAND_PREFIX}quit`,
+        display: `${COMMAND_PREFIX}quit`,
+      },
+    ];
     super(patterns);
   }
 

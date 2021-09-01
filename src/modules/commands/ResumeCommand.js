@@ -13,7 +13,12 @@ export class ResumeCommand extends BaseCommand {
    * Constructor
    */
   constructor() {
-    const patterns = [`^${COMMAND_PREFIX}resume`];
+    const patterns = [
+      {
+        pattern: `^${COMMAND_PREFIX}resume`,
+        display: `${COMMAND_PREFIX}resume`,
+      },
+    ];
     super(patterns);
   }
 

@@ -46,7 +46,7 @@ class CommandManager {
    */
   helpData() {
     return Object.keys(this.commands).reduce((outerAcc, command) => {
-      const patterns = this.commands[command].getPatterns();
+      const patterns = this.commands[command].getDisplayPatterns();
 
       const output = patterns.reduce(
         (innerAcc, pattern) => `${innerAcc}${command} - ${pattern}\n`,

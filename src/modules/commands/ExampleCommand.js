@@ -13,7 +13,12 @@ export class ExampleCommand extends BaseCommand {
    * Constructor
    */
   constructor() {
-    const patterns = [`^${COMMAND_PREFIX}example`];
+    const patterns = [
+      {
+        pattern: `^${COMMAND_PREFIX}example`,
+        display: `${COMMAND_PREFIX}example`,
+      },
+    ];
     super(patterns);
   }
 
