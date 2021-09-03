@@ -2,11 +2,19 @@
 
 import ytdl from 'ytdl-core';
 import ytpl from 'ytpl';
+import ytsr from 'ytsr';
+import isUrl from 'is-url';
 
 import BaseCommand from './BaseCommand';
 
 import { COMMAND_PREFIX } from '../constants';
 import { GUILD_MANAGER_COLLECTION } from '../model';
+
+const PROCESSING_PATTERN_MAPPING = {
+  GENERIC: `^${COMMAND_PREFIX}play (.*)`,
+  VIDEO_SEARCH: `^${COMMAND_PREFIX}search -video (.*)`,
+  PLAYLIST_SEARCH: `^${COMMAND_PREFIX}search -playlist (.*)`,
+};
 
 /**
  * AddCommand
@@ -18,14 +26,19 @@ export class AddCommand extends BaseCommand {
   constructor() {
     const patterns = [
       {
-        pattern: `^${COMMAND_PREFIX}add (.*)`,
-        display: `${COMMAND_PREFIX}add <youtube_link>`,
+        pattern: PROCESSING_PATTERN_MAPPING.GENERIC,
+        display: `${COMMAND_PREFIX}play <youtube link or video to search for>`,
       },
       {
-        pattern: `^${COMMAND_PREFIX}play (.*)`,
-        display: `${COMMAND_PREFIX}play <youtube_link>`,
+        pattern: PROCESSING_PATTERN_MAPPING.VIDEO_SEARCH,
+        display: `${COMMAND_PREFIX}search -video <text to search for>`,
+      },
+      {
+        pattern: PROCESSING_PATTERN_MAPPING.PLAYLIST_SEARCH,
+        display: `${COMMAND_PREFIX}search -playlist <text to search for>`,
       },
     ];
+
     super(patterns);
   }
 
@@ -33,32 +46,105 @@ export class AddCommand extends BaseCommand {
    * Process the add command
    *
    * @param {module:app.Message} messageHook The original message hook
-   * @param {string} link The link to the content to play
+   * @param {string} processingType The type of processing to use
+   * @param {string} input The user input
    */
-  async process(messageHook, link) {
-    const guildId = messageHook.channel.guild.id;
+  async process(messageHook, processingType, input) {
     const channelId = messageHook.member.voice.channelID;
     const channel = messageHook.member.voice.guild.channels.cache.get(channelId);
 
-    const videoInfo = await validateYoutubeVideoAvailable(messageHook, link);
+    switch (processingType) {
+      case PROCESSING_PATTERN_MAPPING.VIDEO_SEARCH:
+        this.processVideoSearchCommand(messageHook, channel, input);
+        break;
+      case PROCESSING_PATTERN_MAPPING.PLAYLIST_SEARCH:
+        this.processPlaylistSearchCommand(messageHook, channel, input);
+        break;
+      default:
+        this.processGenericCommand(messageHook, channel, input);
+        break;
+    }
+  }
 
-    if (!(await validateUserState(messageHook))) return;
-    if (!(await validateYoutubeLink(messageHook, link))) return;
-    if (videoInfo === null) return;
+  /**
+   * Process the add command by searching for a video
+   *
+   * @param {module:app.Message} messageHook The original message hook
+   * @param {module:app.VoiceChannel}channel The voice channel to play across
+   * @param {string} searchTerm The user input
+   */
+  async processVideoSearchCommand(messageHook, channel, searchTerm) {
+    const filters = await ytsr.getFilters(searchTerm);
+    const searchResult = await ytsr(filters.get('Type').get('Video').url, {
+      limit: 1,
+    });
 
+    const link = searchResult.items[0].url;
+
+    this.processVideoLink(messageHook, channel, link);
+  }
+
+  /**
+   * Process the add command by searching for a playlist
+   *
+   * @param {module:app.Message} messageHook The original message hook
+   * @param {module:app.VoiceChannel}channel The voice channel to play across
+   * @param {string} searchTerm The user input
+   */
+  async processPlaylistSearchCommand(messageHook, channel, searchTerm) {
+    const filters = await ytsr.getFilters(searchTerm);
+    const searchResult = await ytsr(filters.get('Type').get('Playlist').url, {
+      limit: 1,
+    });
+
+    const link = searchResult.items[0].url;
+
+    this.processVideoLink(messageHook, channel, link);
+  }
+
+  /**
+   * Process the add command by using either a link or a video search
+   *
+   * @param {module:app.Message} messageHook The original message hook
+   * @param {module:app.VoiceChannel}channel The voice channel to play across
+   * @param {string} searchTerm The user input
+   */
+  async processGenericCommand(messageHook, channel, searchTerm) {
+    if (isUrl(searchTerm)) {
+      this.processVideoLink(messageHook, channel, searchTerm);
+    } else {
+      this.processVideoSearchCommand(messageHook, channel, searchTerm);
+    }
+  }
+
+  /**
+   * Play the content behind the link
+   *
+   * @param {module:app.Message} messageHook The original message hook
+   * @param {module:app.VoiceChannel}channel The voice channel to play across
+   * @param {string} link The link for the video to play
+   */
+  async processVideoLink(messageHook, channel, link) {
+    const guildId = messageHook.channel.guild.id;
     const manager = await GUILD_MANAGER_COLLECTION.getManager(guildId);
 
-    ytpl(link)
-      .then((playlist) => {
-        processPlaylist(manager, playlist);
-        manager.ensurePlaying(channel);
-        manager.listSongs(messageHook);
-      })
-      .catch(() => {
-        processSong(manager, link, videoInfo);
-        manager.ensurePlaying(channel);
-        manager.listSongs(messageHook);
-      });
+    if (await ytpl.validateID(link)) {
+      const playlist = await ytpl(link);
+      processPlaylist(manager, playlist);
+      manager.ensurePlaying(channel);
+      manager.listSongs(messageHook);
+    } else if (await ytdl.validateURL(link)) {
+      const videoInfo = await validateYoutubeVideoAvailable(messageHook, link);
+      if (!(await validateUserState(messageHook))) return;
+      if (!(await validateYoutubeLink(messageHook, link))) return;
+      if (videoInfo === null) return;
+
+      processSong(manager, link, videoInfo);
+      manager.ensurePlaying(channel);
+      manager.listSongs(messageHook);
+    } else {
+      await messageHook.reply('Failed to recognise your input as a playlist or a video');
+    }
   }
 
   /**
@@ -73,7 +159,7 @@ export class AddCommand extends BaseCommand {
     for (let i = 0; i < patterns.length; i += 1) {
       const parsedValues = new RegExp(patterns[i]).exec(command);
       if (parsedValues !== null) {
-        return [parsedValues[1]];
+        return [patterns[i], parsedValues[1]];
       }
     }
 

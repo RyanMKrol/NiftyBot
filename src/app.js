@@ -19,3 +19,10 @@ client.login(DISCORD_CREDENTIALS.token);
  * @typedef Message
  * @see https://discord.js.org/#/docs/main/stable/class/Message
  */
+
+/**
+ * Type representing the voice channel object from discord.js
+ *
+ * @typedef VoiceChannel
+ * @see https://discord.js.org/#/docs/main/stable/class/VoiceChannel
+ */

@@ -16,7 +16,7 @@ export class RemoveCommand extends BaseCommand {
     const patterns = [
       {
         pattern: `^${COMMAND_PREFIX}remove (.*)`,
-        display: `${COMMAND_PREFIX}remove <playlist_item_number>`,
+        display: `${COMMAND_PREFIX}remove <item number>`,
       },
     ];
     super(patterns);

@@ -22,10 +22,12 @@
     "ffmpeg": "0.0.4",
     "ffmpeg-static": "^4.4.0",
     "fluent-ffmpeg": "^2.1.2",
+    "is-url": "^1.2.4",
     "noodle-utils": "^3.4.1",
     "opusscript": "0.0.8",
     "ytdl-core": "^4.9.1",
-    "ytpl": "^2.2.3"
+    "ytpl": "^2.2.3",
+    "ytsr": "^3.5.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.4",
