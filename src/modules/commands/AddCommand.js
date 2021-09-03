@@ -81,6 +81,8 @@ export class AddCommand extends BaseCommand {
 
     const link = searchResult.items[0].url;
 
+    await messageHook.reply(`Adding this video: ${link}`);
+
     this.processVideoLink(messageHook, channel, link);
   }
 
@@ -98,6 +100,7 @@ export class AddCommand extends BaseCommand {
     });
 
     const link = searchResult.items[0].url;
+    await messageHook.reply(`Adding this playlist: ${link}`);
 
     this.processVideoLink(messageHook, channel, link);
   }
