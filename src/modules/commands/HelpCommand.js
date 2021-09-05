@@ -9,7 +9,7 @@ import { COMMAND_PREFIX } from '../constants';
  */
 export class HelpCommand extends BaseCommand {
   /**
-   * Constructor
+   * constructor
    */
   constructor() {
     const patterns = [

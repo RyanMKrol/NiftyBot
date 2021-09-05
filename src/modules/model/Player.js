@@ -1,3 +1,5 @@
+/** @module Model */
+
 import ffmpeg from 'fluent-ffmpeg';
 import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
 import ytdl from 'ytdl-core';
@@ -12,16 +14,11 @@ ffmpeg.setFfmpegPath(ffmpegInstaller.path);
  */
 
 /**
- * @typedef Stream
- * @see https://nodejs.org/api/stream.html
- */
-
-/**
- * A model for the Player
+ * Player
  */
 class Player {
   /**
-   * Constructor
+   * constructor
    *
    * @param {Function} onFinish Method to call after playing a song
    */
@@ -111,10 +108,10 @@ class Player {
   }
 
   /**
-   * Method to join the channel and start streaming audio
+   * Join the channel and start streaming audio
    *
    * @param {module:app.VoiceChannel} channel The voice channel to play in
-   * @param {module:app.PassThrough} stream The data we want to stream to our channel
+   * @param {stream.PassThrough} stream The data we want to stream to our channel
    */
   joinChannelAndStream(channel, stream) {
     channel.join().then(async (connection) => {
@@ -133,10 +130,10 @@ class Player {
 }
 
 /**
- * Method to check if the user's stream is playable
+ * Check if the user's stream is playable
  *
  * @param {YTDL_Stream} stream The stream created from ytdl download
- * @returns {Promise.<Stream> | null} The stream to play, or nothing
+ * @returns {Promise.<stream> | null} The stream to play, or nothing
  */
 async function checkIfStreamPlayable(stream) {
   return new Promise((resolve, reject) => {

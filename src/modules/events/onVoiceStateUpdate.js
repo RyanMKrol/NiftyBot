@@ -3,7 +3,7 @@ import { GUILD_MANAGER_COLLECTION } from '../model';
 import convertMapToMap from '../utils';
 
 /**
- * Method to handle when the voice state changes in any discord server this bot is in
+ * Handle when the voice state changes in any discord server this bot is in
  *
  * @param {module:app.VoiceState} oldState The old voice state
  * @param {module:app.VoiceState} newState The new voice state
@@ -60,7 +60,7 @@ function isOnlyBotInVoiceChannel(channelsMembers) {
 }
 
 /**
- * Parses the current members in each voice channel
+ * Parse the current members in each voice channel
  *
  * @param {Map<JSON>} channels Channels to pull the members from
  * @returns {Array<Array<string>>} The members in each channel

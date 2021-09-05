@@ -1,13 +1,15 @@
+/** @module Model */
+
 import { PLAYLISTS_BUCKET_NAME } from '../constants';
 import { downloadFile } from '../data';
 import Playlist from './Playlist';
 
 /**
- * A collection Playlists
+ * PlaylistCollection
  */
 export class PlaylistCollection {
   /**
-   * Constructs a collection Playlists
+   * constructor
    */
   constructor() {
     this.playlists = {};

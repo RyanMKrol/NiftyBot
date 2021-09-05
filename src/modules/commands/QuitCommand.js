@@ -10,7 +10,7 @@ import { GUILD_MANAGER_COLLECTION } from '../model';
  */
 export class QuitCommand extends BaseCommand {
   /**
-   * Constructor
+   * constructor
    */
   constructor() {
     const patterns = [

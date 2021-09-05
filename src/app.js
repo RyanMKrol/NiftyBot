@@ -26,3 +26,17 @@ client.login(DISCORD_CREDENTIALS.token);
  * @typedef VoiceChannel
  * @see https://discord.js.org/#/docs/main/stable/class/VoiceChannel
  */
+
+/**
+ * Type representing the guild object from discord.js
+ *
+ * @typedef Guild
+ * @see https://discord.js.org/#/docs/main/stable/class/Guild
+ */
+
+/**
+ * Type representing the voice state object from discord.js
+ *
+ * @typedef VoiceState
+ * @see https://discord.js.org/#/docs/main/stable/class/VoiceState
+ */

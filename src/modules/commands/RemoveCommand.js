@@ -10,7 +10,7 @@ import { GUILD_MANAGER_COLLECTION } from '../model';
  */
 export class RemoveCommand extends BaseCommand {
   /**
-   * Constructor
+   * constructor
    */
   constructor() {
     const patterns = [

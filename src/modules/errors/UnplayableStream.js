@@ -1,3 +1,5 @@
+/** @module Errors */
+
 /**
  * Used whenever we're unable to create a stream.
  */

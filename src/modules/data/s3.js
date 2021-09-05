@@ -3,7 +3,7 @@ import AWS from 'aws-sdk';
 import { AWS_CREDENTIALS } from '../constants';
 
 /**
- * Method to download file from S3 storage
+ * Download a file from S3 storage
  *
  * @param {string} bucket The bucket to fetch a file for
  * @param {string} file The file in the bucket we're fetching
@@ -29,7 +29,7 @@ async function downloadFile(bucket, file) {
 }
 
 /**
- * Method to upload a file to S3 storage
+ * Upload a file to S3 storage
  *
  * @param {string} bucket The bucket to upload a file in
  * @param {string} file The filename to upload to the bucket

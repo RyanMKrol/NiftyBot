@@ -1,12 +1,14 @@
+/** @module Model */
+
 import { PLAYLISTS_BUCKET_NAME } from '../constants';
 import { uploadFile } from '../data';
 
 /**
- * A model to track the playlist items
+ * Playlist
  */
 class Playlist {
   /**
-   * Constructor
+   * constructor
    *
    * @param {Array<string>} list A list of links to pre-populate the playlist with
    * @param {string} guildId The guild ID that this playlist exists for
@@ -55,7 +57,7 @@ class Playlist {
   }
 
   /**
-   * Gets the playlist items' links
+   * Get the playlist items' links
    *
    * @returns {Array<string>} Array of links
    */
@@ -64,7 +66,7 @@ class Playlist {
   }
 
   /**
-   * Gets the playlist items' display names
+   * Get the playlist items' display names
    *
    * @returns {Array<string>} Array of display names
    */

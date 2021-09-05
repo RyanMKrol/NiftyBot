@@ -1,3 +1,5 @@
+/** @module Model */
+
 import Player from './Player';
 import PLAYLIST_COLLECTION from './PlaylistCollection';
 import { CouldNotJoinChannel } from '../errors';
@@ -10,7 +12,7 @@ const MAX_TITLE_OUTPUT_COUNT = 15;
  */
 class GuildManager {
   /**
-   * @param {Playlist} playlist The playlist
+   * @param {module:Model.Playlist} playlist The playlist
    */
   constructor(playlist) {
     this.player = new Player(() => this.next());
@@ -39,9 +41,9 @@ class GuildManager {
   /**
    * List all songs in playlist
    *
-   * @param {module:app.Message} responseHook The hook to reply with
+   * @param {module:app.Message} messageHook The hook to reply with
    */
-  listSongs(responseHook) {
+  listSongs(messageHook) {
     const titles = this.playlist.getDisplayNames();
     const outputTitles = titles.slice(0, MAX_TITLE_OUTPUT_COUNT);
     const output = outputTitles.reduce(
@@ -50,11 +52,11 @@ class GuildManager {
     );
 
     if (titles.length === 0) {
-      responseHook.reply("Here's the current playlist:\n```There's nothing here...```");
+      messageHook.reply("Here's the current playlist:\n```There's nothing here...```");
     } else if (titles.length >= 15) {
-      responseHook.reply(`Here's the current playlist:\n\`\`\`yaml\n${output}...\`\`\``);
+      messageHook.reply(`Here's the current playlist:\n\`\`\`yaml\n${output}...\`\`\``);
     } else {
-      responseHook.reply(`Here's the current playlist:\n\`\`\`yaml\n${output}\`\`\``);
+      messageHook.reply(`Here's the current playlist:\n\`\`\`yaml\n${output}\`\`\``);
     }
   }
 
@@ -144,7 +146,7 @@ class GuildManager {
 }
 
 /**
- * Method to format the video titles to a uniform output
+ * Format the video titles to a uniform output
  *
  * @param {string} title Title of the video we're playing
  * @returns {string} A formatted title
@@ -158,7 +160,7 @@ function formatTitle(title) {
 }
 
 /**
- * Method to create a GuildManager object
+ * Create a GuildManager object
  *
  * @param {string} guildId The Guild ID to manage
  * @returns {GuildManager} A GuildManager

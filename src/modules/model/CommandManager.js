@@ -1,3 +1,5 @@
+/** @module Model */
+
 import { shortCircuitPipeline } from 'noodle-utils';
 import * as COMMANDS from '../commands';
 
@@ -13,7 +15,7 @@ class CommandManager {
   }
 
   /**
-   * Processes a message from a guild, and runs any associated commands
+   * Process a message from a guild, and runs any associated commands
    *
    * @param {module:app.Message} messageHook Message containing a potential command
    */

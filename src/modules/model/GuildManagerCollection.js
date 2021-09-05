@@ -1,11 +1,13 @@
+/** @module Model */
+
 import createGuildManagerInstance from './GuildManager';
 
 /**
- * A collection GuildManagers
+ * GuildManagerCollection
  */
 export class GuildManagerCollection {
   /**
-   * Constructs a collection of GuildManagers
+   * constructor
    */
   constructor() {
     this.guildManagers = {};
@@ -15,7 +17,7 @@ export class GuildManagerCollection {
    * Either get a GuildManager, or create one
    *
    * @param {string} guildId The guild ID to get the GuildManager for
-   * @returns {GuildManager} The GuildManager for this guild ID
+   * @returns {module:GuildManager} The GuildManager for this guild ID
    */
   async getManager(guildId) {
     if (this.guildManagers[guildId]) {

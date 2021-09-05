@@ -21,7 +21,7 @@ const PROCESSING_PATTERN_MAPPING = {
  */
 export class AddCommand extends BaseCommand {
   /**
-   * Constructor
+   * constructor
    */
   constructor() {
     const patterns = [
@@ -70,7 +70,7 @@ export class AddCommand extends BaseCommand {
    * Process the add command by searching for a video
    *
    * @param {module:app.Message} messageHook The original message hook
-   * @param {module:app.VoiceChannel}channel The voice channel to play across
+   * @param {module:app.VoiceChannel} channel The voice channel to play across
    * @param {string} searchTerm The user input
    */
   async processVideoSearchCommand(messageHook, channel, searchTerm) {
@@ -121,7 +121,7 @@ export class AddCommand extends BaseCommand {
   }
 
   /**
-   * Play the content behind the link
+   * Play the content from the resulting the link
    *
    * @param {module:app.Message} messageHook The original message hook
    * @param {module:app.VoiceChannel}channel The voice channel to play across
@@ -133,7 +133,9 @@ export class AddCommand extends BaseCommand {
 
     if (await ytpl.validateID(link)) {
       const playlist = await ytpl(link);
+
       processPlaylist(manager, playlist);
+
       manager.ensurePlaying(channel);
       manager.listSongs(messageHook);
     } else if (await ytdl.validateURL(link)) {
@@ -143,6 +145,7 @@ export class AddCommand extends BaseCommand {
       if (videoInfo === null) return;
 
       processSong(manager, link, videoInfo);
+
       manager.ensurePlaying(channel);
       manager.listSongs(messageHook);
     } else {
@@ -171,36 +174,36 @@ export class AddCommand extends BaseCommand {
 }
 
 /**
- * Method to validate if the youtube link is valid
+ * Validate if a youtube link is valid
  *
- * @param {module:app.Message} responseHook The hook to send a message with if the link is invalid
+ * @param {module:app.Message} messageHook The original message hook
  * @param {string} link The youtube link to test
  * @returns {boolean} Whether the link is valid or not
  */
-async function validateYoutubeLink(responseHook, link) {
+async function validateYoutubeLink(messageHook, link) {
   const isLinkValid = await ytdl.validateURL(link);
 
   if (!isLinkValid) {
-    await responseHook.reply("Sorry, we couldn't recognise your link as a valid youtube video!");
+    await messageHook.reply("Sorry, we couldn't recognise your link as a valid youtube video!");
   }
 
   return isLinkValid;
 }
 
 /**
- * Method to validate if the youtube video is available in the region we're streaming from
+ * Validate if the youtube video is available in the region we're streaming from
  *
- * @param {module:app.Message} responseHook The hook to respond with if the video is unavailable
+ * @param {module:app.Message} messageHook The original message hook
  * @param {string} link The youtube link to test
  * @returns {boolean} Whether the video is available to stream or not
  */
-async function validateYoutubeVideoAvailable(responseHook, link) {
+async function validateYoutubeVideoAvailable(messageHook, link) {
   const information = await ytdl.getInfo(link);
 
   const isAvailable = information.formats.length > 0;
 
   if (!isAvailable) {
-    await responseHook.reply(
+    await messageHook.reply(
       "Sorry, could not add your video to the playlist, it doesn't appear to be available in this region!",
     );
   }
@@ -209,26 +212,25 @@ async function validateYoutubeVideoAvailable(responseHook, link) {
 }
 
 /**
- * Method to validate if user adding a playlist item is in the voice channel
+ * Validate if user adding a playlist item is in the voice channel
  *
- * @param {module:app.Message} responseHook The hook to send a message with if the user is
- * not in a valid state
+ * @param {module:app.Message} messageHook The original message hook
  * @returns {boolean} Whether the user is in a voice channel
  */
-async function validateUserState(responseHook) {
-  const isUserInVoiceChannel = responseHook.member.voice.channelID !== null;
+async function validateUserState(messageHook) {
+  const isUserInVoiceChannel = messageHook.member.voice.channelID !== null;
 
   if (!isUserInVoiceChannel) {
-    await responseHook.reply("You're not in a voice channel!");
+    await messageHook.reply("You're not in a voice channel!");
   }
 
   return isUserInVoiceChannel;
 }
 
 /**
- * Adds a single song to our playlist
+ * Add a single song to our playlist
  *
- * @param {GuildManager} manager Facade to playlist and player objects
+ * @param {module:Model.GuildManager} manager Facade to playlist and player objects
  * @param {string} link The link to the media to play
  * @param {JSON} videoInfo Object containing information about the song
  */
@@ -244,7 +246,7 @@ async function processSong(manager, link, videoInfo) {
 /**
  * Add a playlist of songs to our playlist
  *
- * @param {GuildManager} manager Facade to playlist and player objects
+ * @param {module:Model.GuildManager} manager Facade to playlist and player objects
  * @param {JSON} playlistInfo Data around a playlist
  */
 async function processPlaylist(manager, playlistInfo) {
