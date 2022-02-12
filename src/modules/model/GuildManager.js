@@ -121,6 +121,7 @@ class GuildManager {
    */
   quit() {
     this.player.quit();
+    this.currentChannel = undefined;
   }
 
   /**
