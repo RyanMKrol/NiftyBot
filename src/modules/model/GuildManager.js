@@ -2,7 +2,7 @@
 
 import Player from './Player';
 import PLAYLIST_COLLECTION from './PlaylistCollection';
-import { CouldNotJoinChannel } from '../errors';
+import CouldNotJoinChannel from '../errors';
 
 const MAX_TITLE_OUTPUT_LENGTH = 40;
 const MAX_TITLE_OUTPUT_COUNT = 15;

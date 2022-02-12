@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run lint && ./node_modules/.bin/babel src --out-dir build",
     "lint": "eslint src/ --ext .js",
-    "start": "npm run-script build && node build/app.js"
+    "start": "npm run-script build && node build/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "husky": {
     "hooks": {
