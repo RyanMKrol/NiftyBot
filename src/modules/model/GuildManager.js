@@ -139,6 +139,13 @@ class GuildManager {
   }
 
   /**
+   * Shuffle the current playlist
+   */
+  async shuffle() {
+    await this.playlist.shuffle();
+  }
+
+  /**
    * Informs the player that it's been disconnected
    */
   updatePlayerDisconnected() {

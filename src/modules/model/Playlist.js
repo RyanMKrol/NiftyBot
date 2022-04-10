@@ -57,6 +57,19 @@ class Playlist {
   }
 
   /**
+   * Shuffles the links in the playlist
+   */
+  async shuffle() {
+    const currentItem = this.list[0];
+    const remainingList = this.list.slice(1);
+
+    remainingList.sort(() => Math.random() - 0.5);
+    this.list = [currentItem, ...remainingList];
+
+    await this.sync();
+  }
+
+  /**
    * Get the playlist items' links
    *
    * @returns {Array<string>} Array of links
@@ -77,8 +90,8 @@ class Playlist {
   /**
    * Syncs the local playlist with persistant storage
    */
-  sync() {
-    uploadFile(PLAYLISTS_BUCKET_NAME, this.id, JSON.stringify(this.list));
+  async sync() {
+    await uploadFile(PLAYLISTS_BUCKET_NAME, this.id, JSON.stringify(this.list));
   }
 }
 

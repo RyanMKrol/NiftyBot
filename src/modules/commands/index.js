@@ -6,4 +6,5 @@ export { default as PAUSE } from './PauseCommand';
 export { default as QUIT } from './QuitCommand';
 export { default as REMOVE } from './RemoveCommand';
 export { default as RESUME } from './ResumeCommand';
+export { default as SHUFFLE } from './ShuffleCommand';
 export { default as SKIP } from './SkipCommand';
