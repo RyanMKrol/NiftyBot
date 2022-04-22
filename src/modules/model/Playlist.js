@@ -60,11 +60,7 @@ class Playlist {
    * Shuffles the links in the playlist
    */
   async shuffle() {
-    const currentItem = this.list[0];
-    const remainingList = this.list.slice(1);
-
-    remainingList.sort(() => Math.random() - 0.5);
-    this.list = [currentItem, ...remainingList];
+    this.list.sort(() => Math.random() - 0.5);
 
     await this.sync();
   }

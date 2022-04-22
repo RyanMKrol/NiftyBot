@@ -12,6 +12,7 @@ import { GUILD_MANAGER_COLLECTION } from '../model';
 
 const PROCESSING_PATTERN_MAPPING = {
   GENERIC: `^${COMMAND_PREFIX}play (.*)`,
+  SHUFFLE_PLAY: `^${COMMAND_PREFIX}shuffle (.*)`,
   VIDEO_SEARCH: `^${COMMAND_PREFIX}search -video (.*)`,
   PLAYLIST_SEARCH: `^${COMMAND_PREFIX}search -playlist (.*)`,
 };
@@ -28,6 +29,10 @@ export class AddCommand extends BaseCommand {
       {
         pattern: PROCESSING_PATTERN_MAPPING.GENERIC,
         display: `${COMMAND_PREFIX}play <youtube link or video to search for>`,
+      },
+      {
+        pattern: PROCESSING_PATTERN_MAPPING.SHUFFLE_PLAY,
+        display: `${COMMAND_PREFIX}shuffle <youtube link or video to search for>`,
       },
       {
         pattern: PROCESSING_PATTERN_MAPPING.VIDEO_SEARCH,
@@ -54,6 +59,9 @@ export class AddCommand extends BaseCommand {
     const channel = messageHook.member.voice.guild.channels.cache.get(channelId);
 
     switch (processingType) {
+      case PROCESSING_PATTERN_MAPPING.SHUFFLE_PLAY:
+        this.processShuffleAddCommand(messageHook, channel, input);
+        break;
       case PROCESSING_PATTERN_MAPPING.VIDEO_SEARCH:
         this.processVideoSearchCommand(messageHook, channel, input);
         break;
@@ -61,7 +69,7 @@ export class AddCommand extends BaseCommand {
         this.processPlaylistSearchCommand(messageHook, channel, input);
         break;
       default:
-        this.processGenericCommand(messageHook, channel, input);
+        this.processGenericCommand(messageHook, channel, input, false);
         break;
     }
   }
@@ -72,8 +80,9 @@ export class AddCommand extends BaseCommand {
    * @param {module:app.Message} messageHook The original message hook
    * @param {module:app.VoiceChannel} channel The voice channel to play across
    * @param {string} searchTerm The user input
+   * @param {boolean} shuffle Whether to shuffle the list before playing
    */
-  async processVideoSearchCommand(messageHook, channel, searchTerm) {
+  async processVideoSearchCommand(messageHook, channel, searchTerm, shuffle) {
     const filters = await ytsr.getFilters(searchTerm);
     const searchResult = await ytsr(filters.get('Type').get('Video').url, {
       limit: 1,
@@ -83,7 +92,7 @@ export class AddCommand extends BaseCommand {
 
     await messageHook.reply(`Adding this video: ${link}`);
 
-    this.processVideoLink(messageHook, channel, link);
+    this.processVideoLink(messageHook, channel, link, shuffle);
   }
 
   /**
@@ -109,32 +118,49 @@ export class AddCommand extends BaseCommand {
    * Process the add command by using either a link or a video search
    *
    * @param {module:app.Message} messageHook The original message hook
+   * @param {module:app.VoiceChannel} channel The voice channel to play across
+   * @param {string} searchTerm The user input
+   * @param {boolean} shuffle Whether to shuffle the list before playing
+   */
+  async processGenericCommand(messageHook, channel, searchTerm, shuffle) {
+    if (isUrl(searchTerm)) {
+      this.processVideoLink(messageHook, channel, searchTerm, shuffle);
+    } else {
+      this.processVideoSearchCommand(messageHook, channel, searchTerm, shuffle);
+    }
+  }
+
+  /**
+   * Process the add command by using either a link or a video search
+   *
+   * @param {module:app.Message} messageHook The original message hook
    * @param {module:app.VoiceChannel}channel The voice channel to play across
    * @param {string} searchTerm The user input
    */
-  async processGenericCommand(messageHook, channel, searchTerm) {
-    if (isUrl(searchTerm)) {
-      this.processVideoLink(messageHook, channel, searchTerm);
-    } else {
-      this.processVideoSearchCommand(messageHook, channel, searchTerm);
-    }
+  async processShuffleAddCommand(messageHook, channel, searchTerm) {
+    await this.processGenericCommand(messageHook, channel, searchTerm, true);
   }
 
   /**
    * Play the content from the resulting the link
    *
    * @param {module:app.Message} messageHook The original message hook
-   * @param {module:app.VoiceChannel}channel The voice channel to play across
+   * @param {module:app.VoiceChannel} channel The voice channel to play across
    * @param {string} link The link for the video to play
+   * @param {boolean} shuffle Whether to shuffle the list before playing
    */
-  async processVideoLink(messageHook, channel, link) {
+  async processVideoLink(messageHook, channel, link, shuffle) {
     const guildId = messageHook.channel.guild.id;
     const manager = await GUILD_MANAGER_COLLECTION.getManager(guildId);
 
     if (await ytpl.validateID(link)) {
       const playlist = await ytpl(link);
 
-      processPlaylist(manager, playlist);
+      await processPlaylist(manager, playlist);
+
+      if (shuffle) {
+        await manager.shuffle();
+      }
 
       manager.ensurePlaying(channel);
       manager.listSongs(messageHook);
@@ -144,7 +170,11 @@ export class AddCommand extends BaseCommand {
       if (!(await validateYoutubeLink(messageHook, link))) return;
       if (videoInfo === null) return;
 
-      processSong(manager, link, videoInfo);
+      await processSong(manager, link, videoInfo);
+
+      if (shuffle) {
+        await manager.shuffle();
+      }
 
       manager.ensurePlaying(channel);
       manager.listSongs(messageHook);
