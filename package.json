@@ -25,9 +25,9 @@
     "is-url": "^1.2.4",
     "noodle-utils": "^3.4.1",
     "opusscript": "0.0.8",
-    "ytdl-core": "^4.9.1",
-    "ytpl": "^2.2.3",
-    "ytsr": "^3.5.3"
+    "ytdl-core": "^4.11.2",
+    "ytpl": "^2.3.0",
+    "ytsr": "^3.8.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.4",
