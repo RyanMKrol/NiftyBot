@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - 14.17.0
+  - 18.15.0
 script: echo "Testing temporarily disabled"
 deploy:
   provider: script
