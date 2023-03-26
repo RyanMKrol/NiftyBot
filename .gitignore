@@ -26,3 +26,5 @@ credentials/*
 !credentials/*.enc
 
 config.json
+
+.vscode

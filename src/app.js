@@ -1,3 +1,5 @@
+/* eslint-disable import/no-extraneous-dependencies */
+
 import { Client, Events, GatewayIntentBits } from 'discord.js';
 import DISCORD_CREDENTIALS from './modules/constants';
 
