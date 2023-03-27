@@ -4,6 +4,8 @@
   "license": "MIT",
   "scripts": {
     "build": "npm run lint && ./node_modules/.bin/babel src --out-dir build",
+    "debug": "npm run-script build && DEBUG=NiftyBot:* node build/app.js",
+    "deployCommands": "npm run-script build && DEBUG=NiftyBot:* node build/deploy-commands.js",
     "lint": "eslint src/ --ext .js",
     "prepare": "husky install",
     "start": "npm run-script build && node build/app.js",
@@ -11,8 +13,10 @@
   },
   "dependencies": {
     "core-js": "^3.29.1",
+    "debug": "^4.3.4",
     "discord.js": "^14.8.0",
-    "regenerator-runtime": "^0.13.11"
+    "regenerator-runtime": "^0.13.11",
+    "supports-color": "^9.3.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.21.0",

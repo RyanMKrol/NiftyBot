@@ -13,6 +13,7 @@
     "sourceType": "module"
   },
   "rules": {
+    "import/no-extraneous-dependencies": "off",
     "no-use-before-define": [
       "error",
       {
