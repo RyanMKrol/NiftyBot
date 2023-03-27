@@ -3,15 +3,14 @@ import { REST, Routes } from 'discord.js';
 import DISCORD_CREDENTIALS from './modules/constants';
 
 import logger from './modules/logger';
-import ping from './modules/commands/ping';
-import server from './modules/commands/server';
-import user from './modules/commands/user';
+import * as COMMANDS from './modules/commands';
 
 const commands = [];
 
-commands.push(ping.data.toJSON());
-commands.push(server.data.toJSON());
-commands.push(user.data.toJSON());
+Object.keys(COMMANDS).forEach((key) => {
+  const command = COMMANDS[key];
+  commands.push(command.data.toJSON());
+});
 
 // Construct and prepare an instance of the REST module
 const rest = new REST({ version: '10' }).setToken(DISCORD_CREDENTIALS.token);

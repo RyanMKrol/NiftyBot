@@ -2,28 +2,21 @@ import {
   Client, Collection, Events, GatewayIntentBits,
 } from 'discord.js';
 
-import logger from './modules/logger';
-
-import ping from './modules/commands/ping';
-import server from './modules/commands/server';
-import user from './modules/commands/user';
-
 import DISCORD_CREDENTIALS from './modules/constants';
+import logger from './modules/logger';
+import * as COMMANDS from './modules/commands';
 
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 client.commands = new Collection();
 
-// When the client is ready, run this code (only once)
-// We use 'c' for the event parameter to keep it separate from the already defined 'client'
-client.once(Events.ClientReady, (c) => {
-  logger.debug(`Ready! Logged in as ${c.user.tag}`);
+// Register commands with client
+Object.keys(COMMANDS).forEach((key) => {
+  const command = COMMANDS[key];
+  client.commands.set(command.data.name, command);
 });
 
-client.commands.set(ping.data.name, ping);
-client.commands.set(server.data.name, server);
-client.commands.set(user.data.name, user);
-
+// Register event handler with client
 client.on(Events.InteractionCreate, async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
 
@@ -46,5 +39,5 @@ client.on(Events.InteractionCreate, async (interaction) => {
   }
 });
 
-// Log in to Discord with your client's token
+// Log in to Discord
 client.login(DISCORD_CREDENTIALS.token);
