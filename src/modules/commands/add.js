@@ -54,12 +54,6 @@ export default {
       adapterCreator: channel.guild.voiceAdapterCreator,
     });
 
-    logger.debug('creating a video stream');
-    /* eslint-disable-next-line */
-    let stream = await ytdl('https://www.youtube.com/watch?v=Yifz3X_i-F8&ab_channel=MellowUploads', {
-      filter: 'audioonly',
-    });
-
     logger.debug('creating a video player');
     const player = createAudioPlayer({
       behaviors: {
@@ -86,15 +80,14 @@ export default {
       console.error(`Error: ${error.message} with resource ${error.resource.metadata.title}`);
       player.play(getNextResource());
     });
-    // const resource = createAudioResource(stream, { inputType: StreamType.Opus });
 
-    console.log(__dirname)
-    console.log(__dirname+'/../../../sample.mp3')
-    const resource = createAudioResource(__dirname+'/../../../sample.mp3', {
-      metadata: {
-        title: 'A good song!',
-      },
+    logger.debug('creating a video stream');
+    /* eslint-disable-next-line */
+    let stream = await ytdl('https://www.youtube.com/watch?v=EbnH3VHzhu8&ab_channel=SoothingRelaxation', {
+      filter: 'audioonly',
     });
+
+    const resource = createAudioResource(stream);
 
     console.log(resource)
 
