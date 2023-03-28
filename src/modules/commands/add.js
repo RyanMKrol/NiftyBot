@@ -32,39 +32,62 @@ export default {
   async execute(interaction) {
     const guildId = interaction.guild.id;
     const { channel } = interaction.member.voice;
+    const link = interaction.options.getString('link');
 
     if (channel === null) {
       interaction.reply('You have to be in a voice channel to add something!');
       return;
     }
 
-    await interaction.deferReply();
-
     if (!GUILD_COLLECTION.hasGuild(guildId)) {
       GUILD_COLLECTION.createGuild(guildId, channel);
     }
 
-    // switch (interaction.options.getSubcommand()) {
-    //   case ADD_COMMAND_NAMES.VIDEO:
-    //     await interaction.editReply(ADD_COMMAND_NAMES.VIDEO);
-    //     break;
-    //   case ADD_COMMAND_NAMES.PLAYLIST:
-    //     await interaction.editReply(ADD_COMMAND_NAMES.PLAYLIST);
-    //     break;
-    //   default:
-    //     await interaction.editReply('Failed this miserably!');
-    //     break;
-    // }
-
-    const link = interaction.options.getString('link');
-
     const managedGuild = GUILD_COLLECTION.getGuild(guildId);
-    const playlist = managedGuild.getPlaylist();
 
-    playlist.add(link);
+    // the next bit of processing may take time, and discord demands a response within 3s,
+    // deferReply, extends that window for us by displaying something to the user before we
+    // actually reply
+    await interaction.deferReply();
+
+    switch (interaction.options.getSubcommand()) {
+      case ADD_COMMAND_NAMES.VIDEO:
+        await processVideoLink(managedGuild, link);
+        break;
+      case ADD_COMMAND_NAMES.PLAYLIST:
+        await processPlaylistLink(managedGuild, link);
+        break;
+      default:
+        await interaction.editReply('Failed this miserably!');
+        break;
+    }
 
     await managedGuild.ensurePlaying();
 
     await interaction.editReply('Yup');
   },
 };
+
+/**
+ * Method for adding a video to our playlist
+ *
+ * @param {Guild} managedGuild Our guild model for this server
+ * @param {string} link The link to add to the playlist
+ */
+async function processVideoLink(managedGuild, link) {
+  const playlist = managedGuild.getPlaylist();
+
+  playlist.add(link);
+}
+
+/**
+ * Method for adding a playlist of videos to our playlist
+ *
+ * @param {Guild} managedGuild Our guild model for this server
+ * @param {string} link The link to unpack videos from, to add to our playlist
+ */
+async function processPlaylistLink(managedGuild, link) {
+  const playlist = managedGuild.getPlaylist();
+
+  playlist.add(link);
+}
