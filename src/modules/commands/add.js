@@ -1,14 +1,5 @@
 import { SlashCommandBuilder, BaseInteraction } from 'discord.js';
 
-import {
-  createAudioResource,
-} from '@discordjs/voice';
-
-import ytdl from 'ytdl-core';
-
-import { logger } from '../logger';
-
-import Guild from '../models/guild';
 import GUILD_COLLECTION from '../models/guildCollection';
 
 const ADD_COMMAND_NAMES = {
@@ -50,7 +41,7 @@ export default {
     await interaction.deferReply();
 
     if (!GUILD_COLLECTION.hasGuild(guildId)) {
-      GUILD_COLLECTION.addGuild(new Guild(guildId, channel));
+      GUILD_COLLECTION.createGuild(guildId, channel);
     }
 
     // switch (interaction.options.getSubcommand()) {
@@ -65,14 +56,12 @@ export default {
     //     break;
     // }
 
-    const player = GUILD_COLLECTION.getGuild(guildId).getPlayer();
+    const managedGuild = GUILD_COLLECTION.getGuild(guildId);
+    const playlist = managedGuild.getPlaylist();
 
-    logger.debug('Setting up stream of YouTube video');
-    const rawStream = await ytdl('https://www.youtube.com/watch?v=EHIHl8Rw6W8', {
-      filter: 'audioonly',
-    });
+    playlist.add('https://www.youtube.com/watch?v=GM_3IlttE-I&ab_channel=TIMER');
 
-    const playerResource = createAudioResource(rawStream);
-    player.play(playerResource);
+    console.log(playlist);
+    await managedGuild.ensurePlaying();
   },
 };

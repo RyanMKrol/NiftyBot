@@ -28,4 +28,13 @@ export default class Playlist {
     // pop pops from the end
     return this.playlist.pop();
   }
+
+  /**
+   * Checks if the playlist is empty
+   *
+   * @returns {boolean} Whether the playlist is empty
+   */
+  isEmpty() {
+    return this.playlist.length === 0;
+  }
 }

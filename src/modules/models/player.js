@@ -80,6 +80,16 @@ export default class Player {
   }
 
   /**
+   * Checks if the player is idle
+   *
+   * @returns {boolean} Whether the player is idle
+   */
+  isIdle() {
+    playerLogger('Checking if player is idle...');
+    return this.player.state.status === AudioPlayerStatus.Idle;
+  }
+
+  /**
    * Register subscriber with player
    *
    * @param {VoiceConnection} connection The connection to register
@@ -87,5 +97,16 @@ export default class Player {
   registerSubscriber(connection) {
     playerLogger('Registering Subscriber...');
     connection.subscribe(this.player);
+  }
+
+  /**
+   * Register a method to the underlying player's Idle state
+   *
+   * @param {Function} func A method to call when Idle
+   */
+  registerIdleEventHandler(func) {
+    this.player.on(AudioPlayerStatus.Idle, async () => {
+      await func();
+    });
   }
 }

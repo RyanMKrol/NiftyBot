@@ -1,3 +1,7 @@
+import {
+  VoiceState,
+} from '@discordjs/voice';
+
 import Guild from './guild';
 import { logger } from '../logger';
 
@@ -39,11 +43,12 @@ class GuildCollection {
   /**
    * Adds a guild to the collection
    *
-   * @param {Guild} guild The guild to add
+   * @param {string} guildId The ID of the guild we're adding
+   * @param {VoiceState} initialVoiceChannel The voice channel we start adding the connection to
    */
-  addGuild(guild) {
+  createGuild(guildId, initialVoiceChannel) {
     logger.debug('Adding a guild to the collection');
-    this.guilds[guild.getId()] = guild;
+    this.guilds[guildId] = new Guild(guildId, initialVoiceChannel, () => this.removeGuild(guildId));
   }
 
   /**
