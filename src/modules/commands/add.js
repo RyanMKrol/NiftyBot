@@ -1,4 +1,5 @@
 import { SlashCommandBuilder, BaseInteraction } from 'discord.js';
+import ytpl from 'ytpl';
 
 import { GUILD_COLLECTION, Guild } from '../models';
 
@@ -39,6 +40,8 @@ export default {
       return;
     }
 
+    // TODO - Maybe only do this when you've confirmed that you have a video to play
+    // currently, it's possible to have one of these but fail validation on the link...
     if (!GUILD_COLLECTION.hasGuild(guildId)) {
       GUILD_COLLECTION.createGuild(guildId, channel);
     }
@@ -52,42 +55,46 @@ export default {
 
     switch (interaction.options.getSubcommand()) {
       case ADD_COMMAND_NAMES.VIDEO:
-        await processVideoLink(managedGuild, link);
+        await processVideoLink(interaction, managedGuild, link);
         break;
       case ADD_COMMAND_NAMES.PLAYLIST:
-        await processPlaylistLink(managedGuild, link);
+        await processPlaylistLink(interaction, managedGuild, link);
         break;
       default:
         await interaction.editReply('Failed this miserably!');
         break;
     }
-
-    await managedGuild.ensurePlaying();
-
-    await interaction.editReply('Yup');
   },
 };
 
 /**
  * Method for adding a video to our playlist
  *
+ * @param {BaseInteraction} interaction User interaction object
  * @param {Guild} managedGuild Our guild model for this server
  * @param {string} link The link to add to the playlist
  */
-async function processVideoLink(managedGuild, link) {
+async function processVideoLink(interaction, managedGuild, link) {
   const playlist = managedGuild.getPlaylist();
 
   playlist.add(link);
+
+  await managedGuild.ensurePlaying();
 }
 
 /**
  * Method for adding a playlist of videos to our playlist
  *
+ * @param {BaseInteraction} interaction User interaction object
  * @param {Guild} managedGuild Our guild model for this server
  * @param {string} link The link to unpack videos from, to add to our playlist
  */
-async function processPlaylistLink(managedGuild, link) {
-  const playlist = managedGuild.getPlaylist();
+async function processPlaylistLink(interaction, managedGuild, link) {
+  const isPlaylist = await ytpl.validateID(link);
 
-  playlist.add(link);
+  if (!isPlaylist) {
+    await interaction.editReply("This isn't a playlist, go away");
+  } else {
+    await interaction.editReply('This is a playlist, nice!');
+  }
 }
