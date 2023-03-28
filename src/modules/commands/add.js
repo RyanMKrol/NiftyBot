@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, BaseInteraction } from 'discord.js';
 
-import GUILD_COLLECTION from '../models/guildCollection';
+import { GUILD_COLLECTION, Guild } from '../models';
 
 const ADD_COMMAND_NAMES = {
   VIDEO: 'video',

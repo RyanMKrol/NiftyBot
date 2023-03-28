@@ -98,7 +98,6 @@ export default class Guild {
       logger.debug('The playlist is empty, time to clean everything up...');
       this.onDone();
     } else {
-      logger.debug('There are currently this many items left in the playlist', this.playlist.playlist.length);
       logger.debug('Player is idle, pulling next video from the playlist...');
       const nextVideoUrl = this.playlist.next();
 

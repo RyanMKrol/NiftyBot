@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from 'discord.js';
 import { logger } from '../logger';
-import Player from '../models/player';
+import { Player } from '../models';
 import GUILD_COLLECTION from '../models/guildCollection';
 
 const PLAYER_COMMAND_NAMES = {
@@ -10,6 +10,7 @@ const PLAYER_COMMAND_NAMES = {
   CLEAR: 'clear',
   LIST: 'list',
   QUIT: 'quit',
+  SHUFFLE: 'shuffle',
 };
 
 /**
@@ -80,6 +81,9 @@ export default {
       .setName(PLAYER_COMMAND_NAMES.LIST)
       .setDescription('Lists the playlist'))
     .addSubcommand((subcommand) => subcommand
+      .setName(PLAYER_COMMAND_NAMES.SHUFFLE)
+      .setDescription('Shuffles the playlist'))
+    .addSubcommand((subcommand) => subcommand
       .setName(PLAYER_COMMAND_NAMES.QUIT)
       .setDescription('Removes the player from voice chat')),
 
@@ -108,6 +112,9 @@ export default {
         break;
       case PLAYER_COMMAND_NAMES.LIST:
         await interaction.reply(PLAYER_COMMAND_NAMES.LIST);
+        break;
+      case PLAYER_COMMAND_NAMES.SHUFFLE:
+        await interaction.reply(PLAYER_COMMAND_NAMES.SHUFFLE);
         break;
       case PLAYER_COMMAND_NAMES.QUIT:
         await interaction.reply(PLAYER_COMMAND_NAMES.QUIT);
