@@ -1,5 +1,8 @@
+import { getVoiceConnection } from '@discordjs/voice';
+
 import Player from './player';
 import Playlist from './playlist';
+import { logger } from '../logger';
 
 /**
  * Model to manage the guild (server)
@@ -46,7 +49,11 @@ export default class Guild {
   /**
    * Cleans up connections, and players
    */
-  cleanup() {
+  quit() {
+    logger.debug('Performing guild cleanup tasks...');
     this.player.quit();
+
+    const connection = getVoiceConnection(this.id);
+    connection.destroy();
   }
 }

@@ -67,8 +67,6 @@ export default {
     //     break;
     // }
 
-    console.log(GUILD_COLLECTION.getGuild(guildId));
-    console.log(GUILD_COLLECTION.getGuild(guildId).getPlayer());
     const player = GUILD_COLLECTION.getGuild(guildId).getPlayer();
 
     logger.debug('Joining a voice channel');
@@ -81,7 +79,7 @@ export default {
     logger.debug('Creating an audio player');
 
     logger.debug('Setting up stream of YouTube video');
-    const rawStream = await ytdl('https://www.youtube.com/watch?v=EHIHl8Rw6W8&ab_channel=tomcardy', {
+    const rawStream = await ytdl('https://www.youtube.com/watch?v=EHIHl8Rw6W8', {
       filter: 'audioonly',
     });
 

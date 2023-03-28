@@ -49,14 +49,14 @@ class GuildCollection {
   /**
    * Remove a guild from the collection
    *
-   * @param {Guild} guild The guild to remove
+   * @param {string} guildId The ID of the guild to remove
    */
-  removeGuild(guild) {
+  removeGuild(guildId) {
     logger.debug('Removing a guild from the collection');
 
-    guild.cleanup();
+    this.guilds[guildId].quit();
 
-    delete this.guilds[guild.getId()];
+    delete this.guilds[guildId];
   }
 }
 

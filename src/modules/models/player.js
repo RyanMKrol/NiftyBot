@@ -3,6 +3,7 @@ import {
   createAudioPlayer,
   NoSubscriberBehavior,
   AudioResource,
+  VoiceConnection,
 } from '@discordjs/voice';
 import { logger, createLogger } from '../logger';
 
@@ -49,7 +50,7 @@ export default class Player {
    *
    * @param {AudioResource} resource The resource to play
    */
-  async play(resource) {
+  play(resource) {
     playerLogger('Playing...');
     this.player.play(resource);
   }
@@ -57,7 +58,7 @@ export default class Player {
   /**
    * Pause playback on the player
    */
-  async pause() {
+  pause() {
     playerLogger('Pausing...');
     this.player.pause();
   }
@@ -65,7 +66,7 @@ export default class Player {
   /**
    * Resume playback on the player
    */
-  async resume() {
+  resume() {
     playerLogger('Unpausing...');
     this.player.unpause();
   }
@@ -73,7 +74,7 @@ export default class Player {
   /**
    * Removes the player from the server
    */
-  async quit() {
+  quit() {
     playerLogger('Quitting...');
     this.player.stop();
   }
@@ -83,7 +84,7 @@ export default class Player {
    *
    * @param {VoiceConnection} connection The connection to register
    */
-  async registerSubscriber(connection) {
+  registerSubscriber(connection) {
     playerLogger('Registering Subscriber...');
     connection.subscribe(this.player);
   }

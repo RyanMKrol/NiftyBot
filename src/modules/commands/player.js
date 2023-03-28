@@ -22,7 +22,6 @@ function fetchPlayerForGuild(guildId) {
   logger.debug('Fetching the player for server with ID: ', guildId);
 
   const guild = GUILD_COLLECTION.getGuild(guildId);
-
   return guild.getPlayer();
 }
 
@@ -33,6 +32,7 @@ function fetchPlayerForGuild(guildId) {
  */
 async function pause(guildId) {
   logger.debug('Pausing playback on server with ID: ', guildId);
+
   const player = fetchPlayerForGuild(guildId);
   player.pause();
 }
@@ -44,6 +44,7 @@ async function pause(guildId) {
  */
 async function resume(guildId) {
   logger.debug('Resuming playback on server with ID: ', guildId);
+
   const player = fetchPlayerForGuild(guildId);
   player.resume();
 }
@@ -55,8 +56,8 @@ async function resume(guildId) {
  */
 async function quit(guildId) {
   logger.debug('Removing player on server with ID: ', guildId);
-  const player = fetchPlayerForGuild(guildId);
-  player.quit();
+
+  GUILD_COLLECTION.removeGuild(guildId);
 }
 
 export default {
