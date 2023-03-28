@@ -1,4 +1,8 @@
-import { getVoiceConnection } from '@discordjs/voice';
+import {
+  joinVoiceChannel,
+  VoiceConnectionStatus,
+  VoiceState,
+} from '@discordjs/voice';
 
 import Player from './player';
 import Playlist from './playlist';
@@ -12,11 +16,23 @@ export default class Guild {
    * Constructor
    *
    * @param {string} guildId The ID of the guild we're adding
+   * @param {VoiceState} initialVoiceChannel The voice channel we start adding the connection to
    */
-  constructor(guildId) {
+  constructor(guildId, initialVoiceChannel) {
+    this.id = guildId;
     this.playlist = new Playlist();
     this.player = new Player();
-    this.id = guildId;
+
+    logger.debug('Joining voice channel and setting up connection');
+    this.connection = joinVoiceChannel({
+      channelId: initialVoiceChannel.id,
+      guildId,
+      adapterCreator: initialVoiceChannel.guild.voiceAdapterCreator,
+    });
+    this.connection.on(VoiceConnectionStatus.Ready, () => {
+      logger.debug('Connection is ready to play video');
+      this.player.registerSubscriber(this.connection);
+    });
   }
 
   /**
@@ -52,8 +68,6 @@ export default class Guild {
   quit() {
     logger.debug('Performing guild cleanup tasks...');
     this.player.quit();
-
-    const connection = getVoiceConnection(this.id);
-    connection.destroy();
+    this.connection.destroy();
   }
 }

@@ -1,8 +1,6 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { SlashCommandBuilder, BaseInteraction } from 'discord.js';
 
 import {
-  joinVoiceChannel,
-  VoiceConnectionStatus,
   createAudioResource,
 } from '@discordjs/voice';
 
@@ -38,7 +36,7 @@ export default {
   /**
    * Executes the command
    *
-   * @param {object} interaction User interaction object
+   * @param {BaseInteraction} interaction User interaction object
    */
   async execute(interaction) {
     const guildId = interaction.guild.id;
@@ -52,7 +50,7 @@ export default {
     await interaction.deferReply();
 
     if (!GUILD_COLLECTION.hasGuild(guildId)) {
-      GUILD_COLLECTION.addGuild(new Guild(guildId));
+      GUILD_COLLECTION.addGuild(new Guild(guildId, channel));
     }
 
     // switch (interaction.options.getSubcommand()) {
@@ -69,28 +67,12 @@ export default {
 
     const player = GUILD_COLLECTION.getGuild(guildId).getPlayer();
 
-    logger.debug('Joining a voice channel');
-    const connection = joinVoiceChannel({
-      channelId: channel.id,
-      guildId: interaction.guild.id,
-      adapterCreator: channel.guild.voiceAdapterCreator,
-    });
-
-    logger.debug('Creating an audio player');
-
     logger.debug('Setting up stream of YouTube video');
     const rawStream = await ytdl('https://www.youtube.com/watch?v=EHIHl8Rw6W8', {
       filter: 'audioonly',
     });
 
     const playerResource = createAudioResource(rawStream);
-
-    connection.on(VoiceConnectionStatus.Ready, () => {
-      logger.debug('Connection is ready to play video');
-      player.registerSubscriber(connection);
-
-      logger.debug('Playing resource');
-      player.play(playerResource);
-    });
+    player.play(playerResource);
   },
 };
