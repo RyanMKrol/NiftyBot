@@ -42,4 +42,11 @@ export default class Guild {
   getId() {
     return this.id;
   }
+
+  /**
+   * Cleans up connections, and players
+   */
+  cleanup() {
+    this.player.quit();
+  }
 }

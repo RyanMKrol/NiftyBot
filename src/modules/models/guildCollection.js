@@ -53,6 +53,9 @@ class GuildCollection {
    */
   removeGuild(guild) {
     logger.debug('Removing a guild from the collection');
+
+    guild.cleanup();
+
     delete this.guilds[guild.getId()];
   }
 }

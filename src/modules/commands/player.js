@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from 'discord.js';
-import logger from '../logger';
+import { logger } from '../logger';
 import Player from '../models/player';
+import GUILD_COLLECTION from '../models/guildCollection';
 
 const PLAYER_COMMAND_NAMES = {
   PAUSE: 'pause',
@@ -19,7 +20,10 @@ const PLAYER_COMMAND_NAMES = {
  */
 function fetchPlayerForGuild(guildId) {
   logger.debug('Fetching the player for server with ID: ', guildId);
-  return {};
+
+  const guild = GUILD_COLLECTION.getGuild(guildId);
+
+  return guild.getPlayer();
 }
 
 /**
@@ -41,7 +45,7 @@ async function pause(guildId) {
 async function resume(guildId) {
   logger.debug('Resuming playback on server with ID: ', guildId);
   const player = fetchPlayerForGuild(guildId);
-  player.unpause();
+  player.resume();
 }
 
 /**
@@ -50,10 +54,9 @@ async function resume(guildId) {
  * @param {string} guildId The server's ID
  */
 async function quit(guildId) {
-  logger.debug('Removing lpayer on server with ID: ', guildId);
+  logger.debug('Removing player on server with ID: ', guildId);
   const player = fetchPlayerForGuild(guildId);
-  player.stop();
-  // remove subscriptions on the player too
+  player.quit();
 }
 
 export default {

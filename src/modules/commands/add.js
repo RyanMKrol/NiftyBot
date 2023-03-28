@@ -1,4 +1,15 @@
 import { SlashCommandBuilder } from 'discord.js';
+
+import {
+  joinVoiceChannel,
+  VoiceConnectionStatus,
+  createAudioResource,
+} from '@discordjs/voice';
+
+import ytdl from 'ytdl-core';
+
+import { logger } from '../logger';
+
 import Guild from '../models/guild';
 import GUILD_COLLECTION from '../models/guildCollection';
 
@@ -44,39 +55,44 @@ export default {
       GUILD_COLLECTION.addGuild(new Guild(guildId));
     }
 
-    switch (interaction.options.getSubcommand()) {
-      case ADD_COMMAND_NAMES.VIDEO:
-        await interaction.editReply(ADD_COMMAND_NAMES.VIDEO);
-        break;
-      case ADD_COMMAND_NAMES.PLAYLIST:
-        await interaction.editReply(ADD_COMMAND_NAMES.PLAYLIST);
-        break;
-      default:
-        await interaction.editReply('Failed this miserably!');
-        break;
-    }
+    // switch (interaction.options.getSubcommand()) {
+    //   case ADD_COMMAND_NAMES.VIDEO:
+    //     await interaction.editReply(ADD_COMMAND_NAMES.VIDEO);
+    //     break;
+    //   case ADD_COMMAND_NAMES.PLAYLIST:
+    //     await interaction.editReply(ADD_COMMAND_NAMES.PLAYLIST);
+    //     break;
+    //   default:
+    //     await interaction.editReply('Failed this miserably!');
+    //     break;
+    // }
 
-    // logger.debug('Joining a voice channel');
-    // const connection = joinVoiceChannel({
-    //   channelId: channel.id,
-    //   guildId: interaction.guild.id,
-    //   adapterCreator: channel.guild.voiceAdapterCreator,
-    // });
+    console.log(GUILD_COLLECTION.getGuild(guildId));
+    console.log(GUILD_COLLECTION.getGuild(guildId).getPlayer());
+    const player = GUILD_COLLECTION.getGuild(guildId).getPlayer();
 
-    // logger.debug('Creating an audio player');
+    logger.debug('Joining a voice channel');
+    const connection = joinVoiceChannel({
+      channelId: channel.id,
+      guildId: interaction.guild.id,
+      adapterCreator: channel.guild.voiceAdapterCreator,
+    });
 
-    // logger.debug('Setting up stream of YouTube video');
-    // const rawStream = await ytdl('https://www.youtube.com/watch?v=EHIHl8Rw6W8&ab_channel=tomcardy', {
-    //   filter: 'audioonly',
-    // });
-    // const playerResource = createAudioResource(rawStream);
+    logger.debug('Creating an audio player');
 
-    // connection.on(VoiceConnectionStatus.Ready, (oldState, newState) => {
-    //   logger.debug('Connection is ready to play video');
-    //   connection.subscribe(player);
+    logger.debug('Setting up stream of YouTube video');
+    const rawStream = await ytdl('https://www.youtube.com/watch?v=EHIHl8Rw6W8&ab_channel=tomcardy', {
+      filter: 'audioonly',
+    });
 
-    //   logger.debug('Playing resource');
-    //   player.play(playerResource);
-    // });
+    const playerResource = createAudioResource(rawStream);
+
+    connection.on(VoiceConnectionStatus.Ready, () => {
+      logger.debug('Connection is ready to play video');
+      player.registerSubscriber(connection);
+
+      logger.debug('Playing resource');
+      player.play(playerResource);
+    });
   },
 };
