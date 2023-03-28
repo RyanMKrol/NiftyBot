@@ -2,26 +2,23 @@ import { SlashCommandBuilder } from 'discord.js';
 import Guild from '../models/guild';
 import GUILD_COLLECTION from '../models/guildCollection';
 
-// import {
-//   joinVoiceChannel,
-//   VoiceConnectionStatus,
-//   createAudioResource,
-// } from '@discordjs/voice';
-
-// import ytdl from 'ytdl-core';
+const ADD_COMMAND_NAMES = {
+  VIDEO: 'video',
+  PLAYLIST: 'playlist',
+};
 
 export default {
   data: new SlashCommandBuilder()
     .setName('add')
-    .setDescription('Add a song to the playlist')
+    .setDescription('Add to the playlist')
     .addSubcommand((subcommand) => subcommand
-      .setName('video')
+      .setName(ADD_COMMAND_NAMES.VIDEO)
       .setDescription('Add a YouTube video to the playlist')
       .addStringOption((option) => option.setName('link')
         .setDescription('A link to a YouTube video')
         .setRequired(true)))
     .addSubcommand((subcommand) => subcommand
-      .setName('playlist')
+      .setName(ADD_COMMAND_NAMES.PLAYLIST)
       .setDescription('Add a YouTube playlist to the playlist')
       .addStringOption((option) => option.setName('link')
         .setDescription('A link to a YouTube playlist')
@@ -40,10 +37,23 @@ export default {
       interaction.reply('You have to be in a voice channel to add something!');
       return;
     }
+
     await interaction.deferReply();
 
     if (!GUILD_COLLECTION.hasGuild(guildId)) {
       GUILD_COLLECTION.addGuild(new Guild(guildId));
+    }
+
+    switch (interaction.options.getSubcommand()) {
+      case ADD_COMMAND_NAMES.VIDEO:
+        await interaction.editReply(ADD_COMMAND_NAMES.VIDEO);
+        break;
+      case ADD_COMMAND_NAMES.PLAYLIST:
+        await interaction.editReply(ADD_COMMAND_NAMES.PLAYLIST);
+        break;
+      default:
+        await interaction.editReply('Failed this miserably!');
+        break;
     }
 
     // logger.debug('Joining a voice channel');
@@ -68,7 +78,5 @@ export default {
     //   logger.debug('Playing resource');
     //   player.play(playerResource);
     // });
-
-    await interaction.editReply('Playing your video!');
   },
 };
