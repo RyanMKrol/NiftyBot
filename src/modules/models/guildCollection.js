@@ -1,4 +1,5 @@
 import Guild from './guild';
+import { logger } from '../logger';
 
 /**
  * Model to manage a guild (server) collection
@@ -9,6 +10,20 @@ class GuildCollection {
    */
   constructor() {
     this.guilds = {};
+  }
+
+  /**
+   * Checks if a guild is in the collection
+   *
+   * @param {string} guildId The ID of the guild to check
+   * @returns {boolean} Whether the guild is in the collection
+   */
+  hasGuild(guildId) {
+    const doesHaveGuild = typeof this.guilds[guildId] !== 'undefined';
+
+    logger.debug('Checking if guild collection has guild', guildId, doesHaveGuild);
+
+    return doesHaveGuild;
   }
 
   /**
@@ -27,6 +42,7 @@ class GuildCollection {
    * @param {Guild} guild The guild to add
    */
   addGuild(guild) {
+    logger.debug('Adding a guild to the collection');
     this.guilds[guild.getId()] = guild;
   }
 }

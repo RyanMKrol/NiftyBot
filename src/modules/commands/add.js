@@ -1,4 +1,6 @@
 import { SlashCommandBuilder } from 'discord.js';
+import Guild from '../models/guild';
+import GUILD_COLLECTION from '../models/guildCollection';
 
 // import {
 //   joinVoiceChannel,
@@ -7,8 +9,6 @@ import { SlashCommandBuilder } from 'discord.js';
 // } from '@discordjs/voice';
 
 // import ytdl from 'ytdl-core';
-
-// import { logger } from '../logger';
 
 export default {
   data: new SlashCommandBuilder()
@@ -33,6 +33,7 @@ export default {
    * @param {object} interaction User interaction object
    */
   async execute(interaction) {
+    const guildId = interaction.guild.id;
     const { channel } = interaction.member.voice;
 
     if (channel === null) {
@@ -40,6 +41,10 @@ export default {
       return;
     }
     await interaction.deferReply();
+
+    if (!GUILD_COLLECTION.hasGuild(guildId)) {
+      GUILD_COLLECTION.addGuild(new Guild(guildId));
+    }
 
     // logger.debug('Joining a voice channel');
     // const connection = joinVoiceChannel({

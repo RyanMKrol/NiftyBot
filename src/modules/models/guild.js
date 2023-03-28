@@ -1,5 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
-
 import Player from './player';
 import Playlist from './playlist';
 
@@ -9,11 +7,13 @@ import Playlist from './playlist';
 export default class Guild {
   /**
    * Constructor
+   *
+   * @param {string} guildId The ID of the guild we're adding
    */
-  constructor() {
+  constructor(guildId) {
     this.playlist = new Playlist();
     this.player = new Player();
-    this.id = uuidv4();
+    this.id = guildId;
   }
 
   /**
