@@ -6,6 +6,7 @@ export default class Playlist {
    * Constructor
    */
   constructor() {
+    // TODO: Update references in this class to return {link: abc, title: abc}
     this.playlist = [];
   }
 
@@ -17,6 +18,18 @@ export default class Playlist {
   add(link) {
     // unshift adds to the front
     this.playlist.unshift(link);
+  }
+
+  /**
+   * Add multiple videos to the end of a playlist
+   *
+   * @param {Array<string>} links A list of URLs to add
+   */
+  addMultiple(links) {
+    // I'm reversing the order here because we want the first items in the list of links
+    // to be toward the "back" of our managed playlist. The items at the back play first,
+    // and I want to maintain the order of the playlist that's been added
+    this.playlist.unshift(...links.reverse());
   }
 
   /**

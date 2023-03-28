@@ -99,7 +99,7 @@ export default class Guild {
       this.onDone();
     } else {
       logger.debug('Player is idle, pulling next video from the playlist...');
-      const nextVideoUrl = this.playlist.next();
+      const nextVideoUrl = this.playlist.next().link;
 
       logger.debug('Creating a stream from video with url:', nextVideoUrl);
       const rawStream = await ytdl(nextVideoUrl, {

@@ -1,5 +1,6 @@
 import { SlashCommandBuilder, BaseInteraction } from 'discord.js';
 import ytpl from 'ytpl';
+import ytdl from 'ytdl-core';
 
 import { GUILD_COLLECTION, Guild } from '../models';
 
@@ -75,9 +76,18 @@ export default {
  * @param {string} link The link to add to the playlist
  */
 async function processVideoLink(interaction, managedGuild, link) {
-  const playlist = managedGuild.getPlaylist();
+  const managedPlaylist = managedGuild.getPlaylist();
+  const isLinkToVideo = await ytdl.validateURL(link);
 
-  playlist.add(link);
+  if (!isLinkToVideo) {
+    await interaction.editReply("This isn't a video, go away");
+  } else {
+    const information = await ytdl.getInfo(link);
+    managedPlaylist.add({
+      link,
+      title: information.videoDetails.title,
+    });
+  }
 
   await managedGuild.ensurePlaying();
 }
@@ -90,11 +100,19 @@ async function processVideoLink(interaction, managedGuild, link) {
  * @param {string} link The link to unpack videos from, to add to our playlist
  */
 async function processPlaylistLink(interaction, managedGuild, link) {
-  const isPlaylist = await ytpl.validateID(link);
+  const managedPlaylist = managedGuild.getPlaylist();
+  const isLinkToPlaylist = await ytpl.validateID(link);
 
-  if (!isPlaylist) {
+  if (!isLinkToPlaylist) {
     await interaction.editReply("This isn't a playlist, go away");
   } else {
-    await interaction.editReply('This is a playlist, nice!');
+    const playlist = await ytpl(link);
+    const playlistItems = playlist.items.map((item) => ({
+      link: item.shortUrl,
+      title: item.title,
+    }));
+
+    managedPlaylist.addMultiple(playlistItems);
+    await managedGuild.ensurePlaying();
   }
 }
