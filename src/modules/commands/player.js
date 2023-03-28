@@ -1,4 +1,6 @@
 import { SlashCommandBuilder } from 'discord.js';
+import logger from '../logger';
+import Player from '../models/player';
 
 const PLAYER_COMMAND_NAMES = {
   PAUSE: 'pause',
@@ -8,6 +10,51 @@ const PLAYER_COMMAND_NAMES = {
   LIST: 'list',
   QUIT: 'quit',
 };
+
+/**
+ * Fetch the player associated with a given server ID
+ *
+ * @param {string} guildId The server's ID
+ * @returns {Player} The player object
+ */
+function fetchPlayerForGuild(guildId) {
+  logger.debug('Fetching the player for server with ID: ', guildId);
+  return {};
+}
+
+/**
+ * Pause playback on the player
+ *
+ * @param {string} guildId The server's ID
+ */
+async function pause(guildId) {
+  logger.debug('Pausing playback on server with ID: ', guildId);
+  const player = fetchPlayerForGuild(guildId);
+  player.pause();
+}
+
+/**
+ * Resume playback on the player
+ *
+ * @param {string} guildId The server's ID
+ */
+async function resume(guildId) {
+  logger.debug('Resuming playback on server with ID: ', guildId);
+  const player = fetchPlayerForGuild(guildId);
+  player.unpause();
+}
+
+/**
+ * Removes the player from the server
+ *
+ * @param {string} guildId The server's ID
+ */
+async function quit(guildId) {
+  logger.debug('Removing lpayer on server with ID: ', guildId);
+  const player = fetchPlayerForGuild(guildId);
+  player.stop();
+  // remove subscriptions on the player too
+}
 
 export default {
   data: new SlashCommandBuilder()
@@ -38,11 +85,15 @@ export default {
    * @param {object} interaction User interaction object
    */
   async execute(interaction) {
+    const guildId = interaction.guild.id;
+
     switch (interaction.options.getSubcommand()) {
       case PLAYER_COMMAND_NAMES.PAUSE:
+        pause(guildId);
         await interaction.reply(PLAYER_COMMAND_NAMES.PAUSE);
         break;
       case PLAYER_COMMAND_NAMES.RESUME:
+        resume(guildId);
         await interaction.reply(PLAYER_COMMAND_NAMES.RESUME);
         break;
       case PLAYER_COMMAND_NAMES.SKIP:
@@ -56,6 +107,7 @@ export default {
         break;
       case PLAYER_COMMAND_NAMES.QUIT:
         await interaction.reply(PLAYER_COMMAND_NAMES.QUIT);
+        quit(guildId);
         break;
       default:
         await interaction.reply('Failed this miserably!');

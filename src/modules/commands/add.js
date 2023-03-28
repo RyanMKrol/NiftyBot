@@ -1,21 +1,14 @@
-/* eslint-disable */
 import { SlashCommandBuilder } from 'discord.js';
 
-import {
-  joinVoiceChannel,
-   VoiceConnectionStatus,
-    createAudioResource,
-     createAudioPlayer,
-      StreamType,
-      NoSubscriberBehavior,
-      AudioPlayerStatus
-} from '@discordjs/voice';
+// import {
+//   joinVoiceChannel,
+//   VoiceConnectionStatus,
+//   createAudioResource,
+// } from '@discordjs/voice';
 
-import ytdl from 'ytdl-core';
+// import ytdl from 'ytdl-core';
 
-import logger from '../logger';
-
-const playerDebug = require('debug')("NiftyBot:PlayerStatus")
+// import { logger } from '../logger';
 
 export default {
   data: new SlashCommandBuilder()
@@ -43,64 +36,34 @@ export default {
     const { channel } = interaction.member.voice;
 
     if (channel === null) {
-      interaction.reply('Get yourself in a voice channel to start using this bot!');
+      interaction.reply('You have to be in a voice channel to add something!');
       return;
     }
+    await interaction.deferReply();
 
-    logger.debug('joining voice channel');
-    const connection = joinVoiceChannel({
-      channelId: channel.id,
-      guildId: interaction.guild.id,
-      adapterCreator: channel.guild.voiceAdapterCreator,
-    });
+    // logger.debug('Joining a voice channel');
+    // const connection = joinVoiceChannel({
+    //   channelId: channel.id,
+    //   guildId: interaction.guild.id,
+    //   adapterCreator: channel.guild.voiceAdapterCreator,
+    // });
 
-    logger.debug('creating a video player');
-    const player = createAudioPlayer({
-      behaviors: {
-        noSubscriber: NoSubscriberBehavior.Pause,
-      },
-    });
+    // logger.debug('Creating an audio player');
 
-    player.on(AudioPlayerStatus.Idle, () => {
-      playerDebug('Player Status: Idle!');
-    });
-    player.on(AudioPlayerStatus.Buffering, () => {
-      playerDebug('Player Status: Buffering!');
-    });
-    player.on(AudioPlayerStatus.AutoPaused, () => {
-      playerDebug('Player Status: AutoPaused!');
-    });
-    player.on(AudioPlayerStatus.Playing, () => {
-      playerDebug('Player Status: Playing!');
-    });
-    player.on(AudioPlayerStatus.Paused, () => {
-      playerDebug('Player Status: Paused!');
-    });
-    player.on('error', error => {
-      console.error(`Error: ${error.message} with resource ${error.resource.metadata.title}`);
-      player.play(getNextResource());
-    });
+    // logger.debug('Setting up stream of YouTube video');
+    // const rawStream = await ytdl('https://www.youtube.com/watch?v=EHIHl8Rw6W8&ab_channel=tomcardy', {
+    //   filter: 'audioonly',
+    // });
+    // const playerResource = createAudioResource(rawStream);
 
-    logger.debug('creating a video stream');
-    /* eslint-disable-next-line */
-    let stream = await ytdl('https://www.youtube.com/watch?v=EbnH3VHzhu8&ab_channel=SoothingRelaxation', {
-      filter: 'audioonly',
-    });
+    // connection.on(VoiceConnectionStatus.Ready, (oldState, newState) => {
+    //   logger.debug('Connection is ready to play video');
+    //   connection.subscribe(player);
 
-    const resource = createAudioResource(stream);
+    //   logger.debug('Playing resource');
+    //   player.play(playerResource);
+    // });
 
-    console.log(resource)
-
-
-    logger.debug('setting up on video handlers');
-    connection.on(VoiceConnectionStatus.Ready, (oldState, newState) => {
-      logger.debug('playing the video i guess');
-      connection.subscribe(player);
-      logger.debug('subscribed');
-      logger.debug('playing');
-      player.play(resource);
-    });
-
-    await interaction.reply('Playing your video!');
+    await interaction.editReply('Playing your video!');
   },
 };
