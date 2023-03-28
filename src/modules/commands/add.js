@@ -56,12 +56,15 @@ export default {
     //     break;
     // }
 
+    const link = interaction.options.getString('link');
+
     const managedGuild = GUILD_COLLECTION.getGuild(guildId);
     const playlist = managedGuild.getPlaylist();
 
-    playlist.add('https://www.youtube.com/watch?v=GM_3IlttE-I&ab_channel=TIMER');
+    playlist.add(link);
 
-    console.log(playlist);
     await managedGuild.ensurePlaying();
+
+    await interaction.editReply('Yup');
   },
 };
