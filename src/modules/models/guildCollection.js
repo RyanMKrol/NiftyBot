@@ -45,6 +45,16 @@ class GuildCollection {
     logger.debug('Adding a guild to the collection');
     this.guilds[guild.getId()] = guild;
   }
+
+  /**
+   * Remove a guild from the collection
+   *
+   * @param {Guild} guild The guild to remove
+   */
+  removeGuild(guild) {
+    logger.debug('Removing a guild from the collection');
+    delete this.guilds[guild.getId()];
+  }
 }
 
 // export only a single guild collection for the entire application
