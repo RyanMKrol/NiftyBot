@@ -7,7 +7,9 @@ import logger from './modules/logger';
 import * as COMMANDS from './modules/commands';
 
 // Create a new client instance
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates],
+});
 client.commands = new Collection();
 
 // Register commands with client

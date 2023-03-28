@@ -1,7 +1,7 @@
-import ping from './ping';
-import server from './server';
-import user from './user';
+import add from './add';
+import help from './help';
 
 export {
-  ping, server, user,
+  add,
+  help,
 };
