@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { SlashCommandBuilder, BaseInteraction } from 'discord.js';
 import { logger } from '../logger';
 import { Player } from '../models';
 import GUILD_COLLECTION from '../models/GuildCollection';
@@ -31,7 +31,7 @@ function fetchPlayerForGuild(guildId) {
  *
  * @param {string} guildId The server's ID
  */
-async function pause(guildId) {
+function pause(guildId) {
   logger.debug('Pausing playback on server with ID: ', guildId);
 
   const player = fetchPlayerForGuild(guildId);
@@ -43,7 +43,7 @@ async function pause(guildId) {
  *
  * @param {string} guildId The server's ID
  */
-async function resume(guildId) {
+function resume(guildId) {
   logger.debug('Resuming playback on server with ID: ', guildId);
 
   const player = fetchPlayerForGuild(guildId);
@@ -63,11 +63,38 @@ async function skip(guildId) {
 }
 
 /**
+ * Clear the remainder of the playlist
+ *
+ * @param {string} guildId The server's ID
+ */
+async function clear(guildId) {
+  logger.debug('Clearing the playlist on server with ID: ', guildId);
+
+  const guild = GUILD_COLLECTION.getGuild(guildId);
+  guild.clearPlaylist();
+}
+
+/**
+ * Print the remainder of the playlist
+ *
+ * @param {string} guildId The server's ID
+ * @param {BaseInteraction} interaction The user interaction
+ */
+async function list(guildId, interaction) {
+  logger.debug('Clearing the playlist on server with ID: ', guildId);
+
+  const guild = GUILD_COLLECTION.getGuild(guildId);
+  const output = guild.getPlaylistToString();
+
+  interaction.reply(output);
+}
+
+/**
  * Removes the player from the server
  *
  * @param {string} guildId The server's ID
  */
-async function quit(guildId) {
+function quit(guildId) {
   logger.debug('Removing player on server with ID: ', guildId);
 
   GUILD_COLLECTION.removeGuild(guildId);
@@ -102,10 +129,15 @@ export default {
   /**
    * Executes the command
    *
-   * @param {object} interaction User interaction object
+   * @param {BaseInteraction} interaction The user interaction
    */
   async execute(interaction) {
     const guildId = interaction.guild.id;
+
+    if (!GUILD_COLLECTION.hasGuild(guildId)) {
+      await interaction.reply('NiftyBot is sleeping...');
+      return;
+    }
 
     switch (interaction.options.getSubcommand()) {
       case PLAYER_COMMAND_NAMES.PAUSE:
@@ -117,14 +149,15 @@ export default {
         await interaction.reply(PLAYER_COMMAND_NAMES.RESUME);
         break;
       case PLAYER_COMMAND_NAMES.SKIP:
-        skip(guildId);
+        await skip(guildId);
         await interaction.reply(PLAYER_COMMAND_NAMES.SKIP);
         break;
       case PLAYER_COMMAND_NAMES.CLEAR:
-        await interaction.reply(PLAYER_COMMAND_NAMES.CLEAR);
+        clear(guildId);
+        list(guildId, interaction);
         break;
       case PLAYER_COMMAND_NAMES.LIST:
-        await interaction.reply(PLAYER_COMMAND_NAMES.LIST);
+        list(guildId, interaction);
         break;
       case PLAYER_COMMAND_NAMES.SHUFFLE:
         await interaction.reply(PLAYER_COMMAND_NAMES.SHUFFLE);

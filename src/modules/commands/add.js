@@ -84,6 +84,8 @@ async function processVideoLink(interaction, link) {
     });
 
     await managedGuild.ensurePlaying();
+
+    await interaction.followUp('Video added!');
   }
 }
 
@@ -114,6 +116,8 @@ async function processPlaylistLink(interaction, link) {
     managedPlaylist.addMultiple(playlistItems);
 
     await managedGuild.ensurePlaying();
+
+    await interaction.followUp('Playlist added!');
   }
 }
 
@@ -151,7 +155,7 @@ async function parseYouTubeVideoLink(interaction, link) {
  * @returns {object} Playlist object from YouTube API
  */
 async function parseYouTubePlaylistLink(interaction, link) {
-  const isLinkToPlaylist = await ytpl.validateID(link);
+  const isLinkToPlaylist = ytpl.validateID(link);
 
   if (!isLinkToPlaylist) {
     await interaction.followUp(`Link: ${link}, doesn't appear to be associated with YouTube`);

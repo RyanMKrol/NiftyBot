@@ -111,4 +111,36 @@ export default class Guild {
       this.player.play(playerResource);
     }
   }
+
+  /**
+   * Clear the remaining playlist
+   */
+  clearPlaylist() {
+    this.playlist.clear();
+  }
+
+  /**
+   * Get a string representation of the playlist
+   *
+   * @returns {string} String representation of the playlist
+   */
+  getPlaylistToString() {
+    const MAX_TITLE_SIZE = 60;
+    const MAX_LIST_SIZE = 10;
+
+    const playlistItems = this.playlist.getPlaylist().slice(0, MAX_LIST_SIZE);
+
+    if (playlistItems.length === 0) {
+      return 'The playlist is empty!';
+    }
+
+    const output = playlistItems.reduce((acc, val, index) => {
+      const title = val.title.length > MAX_TITLE_SIZE
+        ? `${val.title.substring(0, MAX_TITLE_SIZE - 3)}...`
+        : val.title;
+      return `${acc}${index + 1}. ${title}\n`;
+    }, '');
+
+    return `Here's the current playlist:\n\`\`\`yaml\n${output}...\`\`\``;
+  }
 }

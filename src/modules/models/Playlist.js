@@ -33,6 +33,13 @@ export default class Playlist {
   }
 
   /**
+   * Clear the playlist
+   */
+  clear() {
+    this.playlist = [];
+  }
+
+  /**
    * Pull the next video from the top of the playlist
    *
    * @returns {string} URL to next video
@@ -49,5 +56,14 @@ export default class Playlist {
    */
   isEmpty() {
     return this.playlist.length === 0;
+  }
+
+  /**
+   * Fetch the underlying playlist
+   *
+   * @returns {Array<object>} Underlying playlist
+   */
+  getPlaylist() {
+    return this.playlist;
   }
 }
