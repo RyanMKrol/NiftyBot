@@ -6,8 +6,8 @@ import {
 } from '@discordjs/voice';
 import ytdl from 'ytdl-core';
 
-import Player from './player';
-import Playlist from './playlist';
+import Player from './Player';
+import Playlist from './Playlist';
 import { logger } from '../logger';
 
 /**

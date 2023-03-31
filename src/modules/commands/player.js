@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from 'discord.js';
 import { logger } from '../logger';
 import { Player } from '../models';
-import GUILD_COLLECTION from '../models/guildCollection';
+import GUILD_COLLECTION from '../models/GuildCollection';
 
 const PLAYER_COMMAND_NAMES = {
   PAUSE: 'pause',

@@ -1,7 +1,7 @@
-import Player from './player';
-import Playlist from './playlist';
-import Guild from './guild';
-import GUILD_COLLECTION from './guildCollection';
+import Player from './Player';
+import Playlist from './Playlist';
+import Guild from './Guild';
+import GUILD_COLLECTION from './GuildCollection';
 
 export {
   Player,

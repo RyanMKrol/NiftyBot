@@ -2,7 +2,7 @@ import {
   VoiceState,
 } from '@discordjs/voice';
 
-import Guild from './guild';
+import Guild from './Guild';
 import { logger } from '../logger';
 
 /**
