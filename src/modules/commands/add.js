@@ -3,6 +3,7 @@ import ytpl from 'ytpl';
 import ytdl from 'ytdl-core';
 
 import { GUILD_COLLECTION, Guild } from '../models';
+import { logger } from '../logger';
 
 const ADD_COMMAND_NAMES = {
   VIDEO: 'video',
@@ -74,22 +75,24 @@ export default {
  * @param {BaseInteraction} interaction User interaction object
  * @param {Guild} managedGuild Our guild model for this server
  * @param {string} link The link to add to the playlist
+ * @example Example unavailable video: https://www.youtube.com/watch?v=PE3IslWaB4E
  */
 async function processVideoLink(interaction, managedGuild, link) {
-  const managedPlaylist = managedGuild.getPlaylist();
-  const isLinkToVideo = await ytdl.validateURL(link);
+  logger.debug('Processing a video link...');
 
-  if (!isLinkToVideo) {
-    await interaction.editReply("This isn't a video, go away");
-  } else {
-    const information = await ytdl.getInfo(link);
+  const video = await parseYouTubeVideoLink(interaction, link);
+
+  if (video) {
+    logger.debug('Adding video to playlist...');
+
+    const managedPlaylist = managedGuild.getPlaylist();
     managedPlaylist.add({
       link,
-      title: information.videoDetails.title,
+      title: video.videoDetails.title,
     });
-  }
 
-  await managedGuild.ensurePlaying();
+    await managedGuild.ensurePlaying();
+  }
 }
 
 /**
@@ -100,19 +103,71 @@ async function processVideoLink(interaction, managedGuild, link) {
  * @param {string} link The link to unpack videos from, to add to our playlist
  */
 async function processPlaylistLink(interaction, managedGuild, link) {
-  const managedPlaylist = managedGuild.getPlaylist();
-  const isLinkToPlaylist = await ytpl.validateID(link);
+  logger.debug('Processing a playlist link...');
 
-  if (!isLinkToPlaylist) {
-    await interaction.editReply("This isn't a playlist, go away");
-  } else {
-    const playlist = await ytpl(link);
+  const playlist = await parseYouTubePlaylistLink(interaction, link);
+
+  if (playlist) {
+    logger.debug('Adding videos to playlist...');
+
+    // we don't need to filter by valid youtube links here because the ytpl library
+    // pulls out private and unavailable videos for you!
     const playlistItems = playlist.items.map((item) => ({
       link: item.shortUrl,
       title: item.title,
     }));
 
+    const managedPlaylist = managedGuild.getPlaylist();
     managedPlaylist.addMultiple(playlistItems);
+
     await managedGuild.ensurePlaying();
   }
+}
+
+/**
+ * Pull a representation of a video, if the link is valid
+ *
+ * @param {BaseInteraction} interaction User interaction object
+ * @param {string} link A link to validate
+ * @returns {object} Video object from YouTube API
+ */
+async function parseYouTubeVideoLink(interaction, link) {
+  const isLinkToVideo = ytdl.validateURL(link);
+
+  if (!isLinkToVideo) {
+    await interaction.followUp(`Link: ${link}, doesn't appear to be associated with YouTube`);
+    return undefined;
+  }
+
+  const video = await ytdl.getInfo(link).catch(() => undefined);
+  const isAvailable = video && video.formats.length > 0;
+
+  if (!isAvailable) {
+    await interaction.followUp(`Link: ${link}, is not available`);
+    return undefined;
+  }
+
+  return video;
+}
+
+/**
+ * Pull a representation of a playlist, if the link is valid
+ *
+ * @param {BaseInteraction} interaction User interaction object
+ * @param {string} link A link to validate
+ * @returns {object} Playlist object from YouTube API
+ */
+async function parseYouTubePlaylistLink(interaction, link) {
+  const isLinkToPlaylist = await ytpl.validateID(link);
+
+  if (!isLinkToPlaylist) {
+    await interaction.followUp(`Link: ${link}, doesn't appear to be associated with YouTube`);
+    return undefined;
+  }
+
+  // if the playlist is unavailable because it's private, or unlisted, ytpl() will throw
+  return ytpl(link).catch(async () => {
+    await interaction.followUp(`Link: ${link}, the playlist doesn't appear to be available`);
+    return undefined;
+  });
 }
