@@ -26,7 +26,7 @@ export default class Guild {
     this.playlist = new Playlist();
 
     this.player = new Player();
-    this.player.registerIdleEventHandler(() => this.ensurePlayingCallback());
+    this.player.registerIdleEventHandler(() => this.playNextVideo());
 
     logger.debug('Joining voice channel and setting up connection');
     this.connection = joinVoiceChannel({
@@ -77,7 +77,7 @@ export default class Guild {
       logger.debug('Player is already playing, doing nothing...');
     } else {
       logger.debug('Player was playing nothing, manually starting a video...');
-      await this.ensurePlayingCallback();
+      await this.playNextVideo();
     }
   }
 
@@ -93,7 +93,7 @@ export default class Guild {
   /**
    * Ensures the player is playing by pulling a video from the playlist, and playing it
    */
-  async ensurePlayingCallback() {
+  async playNextVideo() {
     if (this.playlist.isEmpty()) {
       logger.debug('The playlist is empty, time to clean everything up...');
       this.onDone();

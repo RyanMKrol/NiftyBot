@@ -51,6 +51,18 @@ async function resume(guildId) {
 }
 
 /**
+ * Skip this video
+ *
+ * @param {string} guildId The server's ID
+ */
+async function skip(guildId) {
+  logger.debug('Skipping video on server with ID: ', guildId);
+
+  const guild = GUILD_COLLECTION.getGuild(guildId);
+  await guild.playNextVideo();
+}
+
+/**
  * Removes the player from the server
  *
  * @param {string} guildId The server's ID
@@ -105,6 +117,7 @@ export default {
         await interaction.reply(PLAYER_COMMAND_NAMES.RESUME);
         break;
       case PLAYER_COMMAND_NAMES.SKIP:
+        skip(guildId);
         await interaction.reply(PLAYER_COMMAND_NAMES.SKIP);
         break;
       case PLAYER_COMMAND_NAMES.CLEAR:
