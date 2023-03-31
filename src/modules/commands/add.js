@@ -33,7 +33,6 @@ export default {
    * @param {BaseInteraction} interaction User interaction object
    */
   async execute(interaction) {
-    const guildId = interaction.guild.id;
     const { channel } = interaction.member.voice;
     const link = interaction.options.getString('link');
 
@@ -42,14 +41,6 @@ export default {
       return;
     }
 
-    // TODO - Maybe only do this when you've confirmed that you have a video to play
-    // currently, it's possible to have one of these but fail validation on the link...
-    if (!GUILD_COLLECTION.hasGuild(guildId)) {
-      GUILD_COLLECTION.createGuild(guildId, channel);
-    }
-
-    const managedGuild = GUILD_COLLECTION.getGuild(guildId);
-
     // the next bit of processing may take time, and discord demands a response within 3s,
     // deferReply, extends that window for us by displaying something to the user before we
     // actually reply
@@ -57,10 +48,10 @@ export default {
 
     switch (interaction.options.getSubcommand()) {
       case ADD_COMMAND_NAMES.VIDEO:
-        await processVideoLink(interaction, managedGuild, link);
+        await processVideoLink(interaction, link);
         break;
       case ADD_COMMAND_NAMES.PLAYLIST:
-        await processPlaylistLink(interaction, managedGuild, link);
+        await processPlaylistLink(interaction, link);
         break;
       default:
         await interaction.editReply('Failed this miserably!');
@@ -73,11 +64,10 @@ export default {
  * Method for adding a video to our playlist
  *
  * @param {BaseInteraction} interaction User interaction object
- * @param {Guild} managedGuild Our guild model for this server
  * @param {string} link The link to add to the playlist
  * @example Example unavailable video: https://www.youtube.com/watch?v=PE3IslWaB4E
  */
-async function processVideoLink(interaction, managedGuild, link) {
+async function processVideoLink(interaction, link) {
   logger.debug('Processing a video link...');
 
   const video = await parseYouTubeVideoLink(interaction, link);
@@ -85,7 +75,9 @@ async function processVideoLink(interaction, managedGuild, link) {
   if (video) {
     logger.debug('Adding video to playlist...');
 
+    const managedGuild = setupGuildFromInteraction(interaction);
     const managedPlaylist = managedGuild.getPlaylist();
+
     managedPlaylist.add({
       link,
       title: video.videoDetails.title,
@@ -99,10 +91,9 @@ async function processVideoLink(interaction, managedGuild, link) {
  * Method for adding a playlist of videos to our playlist
  *
  * @param {BaseInteraction} interaction User interaction object
- * @param {Guild} managedGuild Our guild model for this server
  * @param {string} link The link to unpack videos from, to add to our playlist
  */
-async function processPlaylistLink(interaction, managedGuild, link) {
+async function processPlaylistLink(interaction, link) {
   logger.debug('Processing a playlist link...');
 
   const playlist = await parseYouTubePlaylistLink(interaction, link);
@@ -117,7 +108,9 @@ async function processPlaylistLink(interaction, managedGuild, link) {
       title: item.title,
     }));
 
+    const managedGuild = setupGuildFromInteraction(interaction);
     const managedPlaylist = managedGuild.getPlaylist();
+
     managedPlaylist.addMultiple(playlistItems);
 
     await managedGuild.ensurePlaying();
@@ -170,4 +163,21 @@ async function parseYouTubePlaylistLink(interaction, link) {
     await interaction.followUp(`Link: ${link}, the playlist doesn't appear to be available`);
     return undefined;
   });
+}
+
+/**
+ * Creates a guild in the app's memory
+ *
+ * @param {BaseInteraction} interaction User interaction object
+ * @returns {Guild} Our guild model for this server
+ */
+function setupGuildFromInteraction(interaction) {
+  const guildId = interaction.guild.id;
+  const { channel } = interaction.member.voice;
+
+  if (!GUILD_COLLECTION.hasGuild(guildId)) {
+    GUILD_COLLECTION.createGuild(guildId, channel);
+  }
+
+  return GUILD_COLLECTION.getGuild(guildId);
 }
