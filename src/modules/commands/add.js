@@ -6,9 +6,10 @@ import ytsr from 'ytsr';
 import { GUILD_COLLECTION, Guild } from '../models';
 import { logger } from '../logger';
 
-const SUBCOMMAND_OPTION_LINK = 'link';
-const SUBCOMMAND_OPTION_TITLE = 'title';
-
+const SUBCOMMAND_OPTION_NAMES = {
+  LINK: 'link',
+  TITLE: 'title',
+};
 const ADD_COMMAND_NAMES = {
   VIDEO: 'video',
   PLAYLIST: 'playlist',
@@ -23,25 +24,25 @@ export default {
     .addSubcommand((subcommand) => subcommand
       .setName(ADD_COMMAND_NAMES.VIDEO)
       .setDescription('Add a YouTube video to the playlist')
-      .addStringOption((option) => option.setName(SUBCOMMAND_OPTION_LINK)
+      .addStringOption((option) => option.setName(SUBCOMMAND_OPTION_NAMES.LINK)
         .setDescription('A link to a YouTube video')
         .setRequired(true)))
     .addSubcommand((subcommand) => subcommand
       .setName(ADD_COMMAND_NAMES.PLAYLIST)
       .setDescription('Add a YouTube playlist to the playlist')
-      .addStringOption((option) => option.setName(SUBCOMMAND_OPTION_LINK)
+      .addStringOption((option) => option.setName(SUBCOMMAND_OPTION_NAMES.LINK)
         .setDescription('A link to a YouTube playlist')
         .setRequired(true)))
     .addSubcommand((subcommand) => subcommand
       .setName(ADD_COMMAND_NAMES.SEARCH_VIDEO)
       .setDescription('Search for a YouTube video to the playlist')
-      .addStringOption((option) => option.setName(SUBCOMMAND_OPTION_TITLE)
+      .addStringOption((option) => option.setName(SUBCOMMAND_OPTION_NAMES.TITLE)
         .setDescription('The title of a YouTube video')
         .setRequired(true)))
     .addSubcommand((subcommand) => subcommand
       .setName(ADD_COMMAND_NAMES.SEARCH_PLAYLIST)
       .setDescription('Search for a YouTube playlist to the playlist')
-      .addStringOption((option) => option.setName(SUBCOMMAND_OPTION_TITLE)
+      .addStringOption((option) => option.setName(SUBCOMMAND_OPTION_NAMES.TITLE)
         .setDescription('The title of a YouTube playlist')
         .setRequired(true))),
 
@@ -67,25 +68,25 @@ export default {
       case ADD_COMMAND_NAMES.VIDEO:
         await processVideoLink(
           interaction,
-          interaction.options.getString(SUBCOMMAND_OPTION_LINK),
+          interaction.options.getString(SUBCOMMAND_OPTION_NAMES.LINK),
         );
         break;
       case ADD_COMMAND_NAMES.PLAYLIST:
         await processPlaylistLink(
           interaction,
-          interaction.options.getString(SUBCOMMAND_OPTION_LINK),
+          interaction.options.getString(SUBCOMMAND_OPTION_NAMES.LINK),
         );
         break;
       case ADD_COMMAND_NAMES.SEARCH_VIDEO:
         await processVideoSearch(
           interaction,
-          interaction.options.getString(SUBCOMMAND_OPTION_TITLE),
+          interaction.options.getString(SUBCOMMAND_OPTION_NAMES.TITLE),
         );
         break;
       case ADD_COMMAND_NAMES.SEARCH_PLAYLIST:
         await processPlaylistSearch(
           interaction,
-          interaction.options.getString(SUBCOMMAND_OPTION_TITLE),
+          interaction.options.getString(SUBCOMMAND_OPTION_NAMES.TITLE),
         );
         break;
       default:
