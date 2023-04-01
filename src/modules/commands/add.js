@@ -169,14 +169,14 @@ async function processVideoSearch(interaction, searchInput) {
     limit: 1,
   });
 
-  if (searchResult) {
+  if (searchResult && searchResult.items.length > 0) {
     const link = searchResult.items[0].url;
 
     logger.debug('Found this link in the video search', link);
 
     await processVideoLink(interaction, link);
   } else {
-    interaction.reply(`Could not find a video using search terms: ${searchInput}`);
+    interaction.followUp(`Problem with input:\n\`${searchInput}\`\nReason: Could not find a video using search terms`);
   }
 }
 
@@ -194,14 +194,14 @@ async function processPlaylistSearch(interaction, searchInput) {
     limit: 1,
   });
 
-  if (searchResult) {
+  if (searchResult && searchResult.items.length > 0) {
     const link = searchResult.items[0].url;
 
     logger.debug('Found this link in the playlist search', link);
 
     await processPlaylistLink(interaction, link);
   } else {
-    interaction.reply(`Could not find a video using search terms: ${searchInput}`);
+    interaction.followUp(`Problem with input:\n\`${searchInput}\`\nReason: Could not find a playlist using search terms`);
   }
 }
 
@@ -217,7 +217,7 @@ async function parseYouTubeVideoLink(interaction, link) {
   const isLinkToVideo = ytdl.validateURL(link);
 
   if (!isLinkToVideo) {
-    await interaction.followUp(`Link: ${link}, doesn't appear to be associated with YouTube`);
+    await interaction.followUp(`Problem with link:\n\`${link}\`\nReason: It doesn't appear to be associated with YouTube`);
     return undefined;
   }
 
@@ -225,7 +225,7 @@ async function parseYouTubeVideoLink(interaction, link) {
   const isAvailable = video && video.formats.length > 0;
 
   if (!isAvailable) {
-    await interaction.followUp(`Link: ${link}, is not available`);
+    await interaction.followUp(`Problem with link:\n\`${link}\`\nReason: It is not available`);
     return undefined;
   }
 
@@ -243,13 +243,13 @@ async function parseYouTubePlaylistLink(interaction, link) {
   const isLinkToPlaylist = ytpl.validateID(link);
 
   if (!isLinkToPlaylist) {
-    await interaction.followUp(`Link: ${link}, doesn't appear to be associated with YouTube`);
+    await interaction.followUp(`Problem with link:\n\`${link}\`\nReason: It doesn't appear to be associated with YouTube`);
     return undefined;
   }
 
   // if the playlist is unavailable because it's private, or unlisted, ytpl() will throw
   return ytpl(link).catch(async () => {
-    await interaction.followUp(`Link: ${link}, the playlist doesn't appear to be available`);
+    await interaction.followUp(`Problem with link:\n\`${link}\`\nReason: It is not available`);
     return undefined;
   });
 }
