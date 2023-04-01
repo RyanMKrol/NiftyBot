@@ -128,7 +128,8 @@ export default class Guild {
     const MAX_TITLE_SIZE = 60;
     const MAX_LIST_SIZE = 10;
 
-    const playlistItems = this.playlist.getPlaylist().slice(0, MAX_LIST_SIZE);
+    const rawPlaylist = this.playlist.getPlaylist();
+    const playlistItems = rawPlaylist.slice(0, MAX_LIST_SIZE);
 
     if (playlistItems.length === 0) {
       return 'The playlist is empty!';
@@ -141,7 +142,9 @@ export default class Guild {
       return `${acc}${index + 1}. ${title}\n`;
     }, '');
 
-    return `Here's the current playlist:\n\`\`\`yaml\n${output}...\`\`\``;
+    return rawPlaylist.length > MAX_LIST_SIZE
+      ? `Here's the current playlist:\n\`\`\`yaml\n${output}...\`\`\``
+      : `Here's the current playlist:\n\`\`\`yaml\n${output}\`\`\``;
   }
 
   /**
