@@ -11,6 +11,6 @@ export default {
    * @param {object} interaction User interaction object
    */
   async execute(interaction) {
-    await interaction.reply('Here are the commands!');
+    await interaction.reply('Type `/add` or `/player` to control this bot!');
   },
 };
