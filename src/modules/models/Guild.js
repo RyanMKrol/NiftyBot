@@ -1,3 +1,5 @@
+/* eslint-disable no-bitwise */
+
 import {
   joinVoiceChannel,
   VoiceConnectionStatus,
@@ -5,10 +7,15 @@ import {
   createAudioResource,
 } from '@discordjs/voice';
 import ytdl from 'ytdl-core';
+import ffmpeg from 'fluent-ffmpeg';
+import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
+import Readable from 'stream';
 
 import Player from './Player';
 import Playlist from './Playlist';
 import { logger } from '../logger';
+
+ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
 /**
  * Model to manage the guild (server)
@@ -102,13 +109,20 @@ export default class Guild {
       const nextVideoUrl = this.playlist.next().link;
 
       logger.debug('Creating a stream from video with url:', nextVideoUrl);
-      const rawStream = await ytdl(nextVideoUrl, {
+      const rawStream = ytdl(nextVideoUrl, {
         filter: 'audioonly',
+        quality: 'highestaudio',
+        highWaterMark: 1 << 25,
       });
-      const playerResource = createAudioResource(rawStream);
 
-      logger.debug('Playing video...');
-      this.player.play(playerResource);
+      await createFfmpegStream(rawStream).then((playableStream) => {
+        const playerResource = createAudioResource(playableStream);
+
+        logger.debug('Playing video...');
+        this.player.play(playerResource);
+      }).catch((error) => {
+        logger.error('There was an error playing this resource', error);
+      });
     }
   }
 
@@ -153,4 +167,28 @@ export default class Guild {
   shufflePlaylist() {
     this.playlist.shuffle();
   }
+}
+
+/**
+ * Check if the user's stream is playable
+ *
+ * @param {Readable} stream The stream created from ytdl download
+ * @returns {Promise.<stream>} The stream to play
+ */
+async function createFfmpegStream(stream) {
+  return new Promise((resolve, reject) => {
+    const download = ffmpeg(stream)
+      .audioBitrate(96)
+      .format('ogg');
+
+    const verifiedDownload = download
+      .on('error', (downloadError) => {
+        logger.debug('Had an issue with this video', downloadError);
+        reject();
+      })
+      .on('codecData', () => {
+        resolve(verifiedDownload);
+      })
+      .pipe();
+  });
 }
