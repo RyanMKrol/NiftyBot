@@ -16,8 +16,7 @@ export default class Playlist {
    * @param {string} link URL of video to add
    */
   add(link) {
-    // unshift adds to the front
-    this.playlist.unshift(link);
+    this.playlist.push(link);
   }
 
   /**
@@ -26,10 +25,7 @@ export default class Playlist {
    * @param {Array<string>} links A list of URLs to add
    */
   addMultiple(links) {
-    // I'm reversing the order here because we want the first items in the list of links
-    // to be toward the "back" of our managed playlist. The items at the back play first,
-    // and I want to maintain the order of the playlist that's been added
-    this.playlist.unshift(...links.reverse());
+    this.playlist.push(...links);
   }
 
   /**
@@ -45,8 +41,7 @@ export default class Playlist {
    * @returns {string} URL to next video
    */
   next() {
-    // pop pops from the end
-    return this.playlist.pop();
+    return this.playlist.shift();
   }
 
   /**
@@ -65,5 +60,12 @@ export default class Playlist {
    */
   getPlaylist() {
     return this.playlist;
+  }
+
+  /**
+   * Shuffle the values in the playlist
+   */
+  shuffle() {
+    this.playlist.sort(() => Math.random() - 0.5);
   }
 }

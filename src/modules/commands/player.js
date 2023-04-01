@@ -9,8 +9,8 @@ const PLAYER_COMMAND_NAMES = {
   SKIP: 'skip',
   CLEAR: 'clear',
   LIST: 'list',
-  QUIT: 'quit',
   SHUFFLE: 'shuffle',
+  QUIT: 'quit',
 };
 
 /**
@@ -81,12 +81,24 @@ async function clear(guildId) {
  * @param {BaseInteraction} interaction The user interaction
  */
 async function list(guildId, interaction) {
-  logger.debug('Clearing the playlist on server with ID: ', guildId);
+  logger.debug('Printing the playlist on server with ID: ', guildId);
 
   const guild = GUILD_COLLECTION.getGuild(guildId);
   const output = guild.getPlaylistToString();
 
   interaction.reply(output);
+}
+
+/**
+ * Shuffle the remainder of the playlist
+ *
+ * @param {string} guildId The server's ID
+ */
+async function shuffle(guildId) {
+  logger.debug('Shuffling the playlist on server with ID: ', guildId);
+
+  const guild = GUILD_COLLECTION.getGuild(guildId);
+  guild.shufflePlaylist();
 }
 
 /**
@@ -142,11 +154,11 @@ export default {
     switch (interaction.options.getSubcommand()) {
       case PLAYER_COMMAND_NAMES.PAUSE:
         pause(guildId);
-        await interaction.reply(PLAYER_COMMAND_NAMES.PAUSE);
+        await interaction.reply('Pausing...');
         break;
       case PLAYER_COMMAND_NAMES.RESUME:
         resume(guildId);
-        await interaction.reply(PLAYER_COMMAND_NAMES.RESUME);
+        await interaction.reply('Resuming...');
         break;
       case PLAYER_COMMAND_NAMES.SKIP:
         await skip(guildId);
@@ -160,11 +172,12 @@ export default {
         list(guildId, interaction);
         break;
       case PLAYER_COMMAND_NAMES.SHUFFLE:
-        await interaction.reply(PLAYER_COMMAND_NAMES.SHUFFLE);
+        shuffle(guildId);
+        list(guildId, interaction);
         break;
       case PLAYER_COMMAND_NAMES.QUIT:
-        await interaction.reply(PLAYER_COMMAND_NAMES.QUIT);
         quit(guildId);
+        await interaction.reply('Goodbye!');
         break;
       default:
         await interaction.reply('Failed this miserably!');

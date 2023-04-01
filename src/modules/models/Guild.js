@@ -143,4 +143,11 @@ export default class Guild {
 
     return `Here's the current playlist:\n\`\`\`yaml\n${output}...\`\`\``;
   }
+
+  /**
+   * Shuffle the remaining playlist
+   */
+  shufflePlaylist() {
+    this.playlist.shuffle();
+  }
 }
