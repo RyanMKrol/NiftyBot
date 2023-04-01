@@ -1,13 +1,19 @@
 import { SlashCommandBuilder, BaseInteraction } from 'discord.js';
 import ytpl from 'ytpl';
 import ytdl from 'ytdl-core';
+import ytsr from 'ytsr';
 
 import { GUILD_COLLECTION, Guild } from '../models';
 import { logger } from '../logger';
 
+const SUBCOMMAND_OPTION_LINK = 'link';
+const SUBCOMMAND_OPTION_TITLE = 'title';
+
 const ADD_COMMAND_NAMES = {
   VIDEO: 'video',
   PLAYLIST: 'playlist',
+  SEARCH_VIDEO: 'search_video',
+  SEARCH_PLAYLIST: 'search_playlist',
 };
 
 export default {
@@ -17,14 +23,26 @@ export default {
     .addSubcommand((subcommand) => subcommand
       .setName(ADD_COMMAND_NAMES.VIDEO)
       .setDescription('Add a YouTube video to the playlist')
-      .addStringOption((option) => option.setName('link')
+      .addStringOption((option) => option.setName(SUBCOMMAND_OPTION_LINK)
         .setDescription('A link to a YouTube video')
         .setRequired(true)))
     .addSubcommand((subcommand) => subcommand
       .setName(ADD_COMMAND_NAMES.PLAYLIST)
       .setDescription('Add a YouTube playlist to the playlist')
-      .addStringOption((option) => option.setName('link')
+      .addStringOption((option) => option.setName(SUBCOMMAND_OPTION_LINK)
         .setDescription('A link to a YouTube playlist')
+        .setRequired(true)))
+    .addSubcommand((subcommand) => subcommand
+      .setName(ADD_COMMAND_NAMES.SEARCH_VIDEO)
+      .setDescription('Search for a YouTube video to the playlist')
+      .addStringOption((option) => option.setName(SUBCOMMAND_OPTION_TITLE)
+        .setDescription('The title of a YouTube video')
+        .setRequired(true)))
+    .addSubcommand((subcommand) => subcommand
+      .setName(ADD_COMMAND_NAMES.SEARCH_PLAYLIST)
+      .setDescription('Search for a YouTube playlist to the playlist')
+      .addStringOption((option) => option.setName(SUBCOMMAND_OPTION_TITLE)
+        .setDescription('The title of a YouTube playlist')
         .setRequired(true))),
 
   /**
@@ -34,7 +52,6 @@ export default {
    */
   async execute(interaction) {
     const { channel } = interaction.member.voice;
-    const link = interaction.options.getString('link');
 
     if (channel === null) {
       interaction.reply('You have to be in a voice channel to add something!');
@@ -48,10 +65,28 @@ export default {
 
     switch (interaction.options.getSubcommand()) {
       case ADD_COMMAND_NAMES.VIDEO:
-        await processVideoLink(interaction, link);
+        await processVideoLink(
+          interaction,
+          interaction.options.getString(SUBCOMMAND_OPTION_LINK),
+        );
         break;
       case ADD_COMMAND_NAMES.PLAYLIST:
-        await processPlaylistLink(interaction, link);
+        await processPlaylistLink(
+          interaction,
+          interaction.options.getString(SUBCOMMAND_OPTION_LINK),
+        );
+        break;
+      case ADD_COMMAND_NAMES.SEARCH_VIDEO:
+        await processVideoSearch(
+          interaction,
+          interaction.options.getString(SUBCOMMAND_OPTION_TITLE),
+        );
+        break;
+      case ADD_COMMAND_NAMES.SEARCH_PLAYLIST:
+        await processPlaylistSearch(
+          interaction,
+          interaction.options.getString(SUBCOMMAND_OPTION_TITLE),
+        );
         break;
       default:
         await interaction.editReply('Failed this miserably!');
@@ -65,7 +100,6 @@ export default {
  *
  * @param {BaseInteraction} interaction User interaction object
  * @param {string} link The link to add to the playlist
- * @example Example unavailable video: https://www.youtube.com/watch?v=PE3IslWaB4E
  */
 async function processVideoLink(interaction, link) {
   logger.debug('Processing a video link...');
@@ -122,11 +156,62 @@ async function processPlaylistLink(interaction, link) {
 }
 
 /**
+ * Method to search for a YouTube video to then add to the playlist
+ *
+ * @param {BaseInteraction} interaction User interaction object
+ * @param {string} searchInput The video title to search for
+ */
+async function processVideoSearch(interaction, searchInput) {
+  logger.debug('Processing a video search...', searchInput);
+
+  const filters = await ytsr.getFilters(searchInput);
+  const searchResult = await ytsr(filters.get('Type').get('Video').url, {
+    limit: 1,
+  });
+
+  if (searchResult) {
+    const link = searchResult.items[0].url;
+
+    logger.debug('Found this link in the video search', link);
+
+    await processVideoLink(interaction, link);
+  } else {
+    interaction.reply(`Could not find a video using search terms: ${searchInput}`);
+  }
+}
+
+/**
+ * Method to search for a YouTube playlist to then add to the playlist
+ *
+ * @param {BaseInteraction} interaction User interaction object
+ * @param {string} searchInput The playlist title to search for
+ */
+async function processPlaylistSearch(interaction, searchInput) {
+  logger.debug('Processing a video search...');
+
+  const filters = await ytsr.getFilters(searchInput);
+  const searchResult = await ytsr(filters.get('Type').get('Playlist').url, {
+    limit: 1,
+  });
+
+  if (searchResult) {
+    const link = searchResult.items[0].url;
+
+    logger.debug('Found this link in the playlist search', link);
+
+    await processPlaylistLink(interaction, link);
+  } else {
+    interaction.reply(`Could not find a video using search terms: ${searchInput}`);
+  }
+}
+
+/**
  * Pull a representation of a video, if the link is valid
  *
  * @param {BaseInteraction} interaction User interaction object
  * @param {string} link A link to validate
  * @returns {object} Video object from YouTube API
+ * @example Example unavailable video: https://www.youtube.com/watch?v=PE3IslWaB4E
  */
 async function parseYouTubeVideoLink(interaction, link) {
   const isLinkToVideo = ytdl.validateURL(link);

@@ -26,7 +26,8 @@
     "regenerator-runtime": "^0.13.11",
     "supports-color": "^9.3.1",
     "ytdl-core": "^4.11.3",
-    "ytpl": "^2.3.0"
+    "ytpl": "^2.3.0",
+    "ytsr": "^3.8.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.21.0",
